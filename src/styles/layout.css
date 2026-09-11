@@ -8,7 +8,15 @@
    ═════════════════════════════════════════════════════════════════════════ */
 
 /* The page shell. Flush to the leading edge with the trailing side left open —
-   not `margin-inline: auto`. */
+   not `margin-inline: auto`. `.shell` constrains the measure; `.page` is the
+   shell plus the vertical rhythm of a whole page. A full-bleed band sits
+   outside the shell and puts one inside itself. */
+.shell {
+  max-inline-size: var(--page-max);
+  margin-inline: 0;
+  padding-inline: var(--page-gutter);
+}
+
 .page {
   max-inline-size: var(--page-max);
   margin-inline: 0;

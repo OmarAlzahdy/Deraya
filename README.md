@@ -3,19 +3,28 @@
 An AI school and an engineering practice, in one place — from zero to
 production, in Arabic and English.
 
-This repository is at the **foundation stage**: the design token layer, the
-bilingual AR/EN routing and the RTL contract are built and verified. None of
-the eight product screens are built — they have no approved layouts yet, and
-several of them are blocked on decisions listed under
-[Open decisions](#open-decisions) below.
+**What is built:** the design token layer, the bilingual AR/EN routing and RTL
+contract, the component layer, the database schema with its access model, and
+screens 01–03 (Home, Track detail, Services).
+
+**What those screens are:** layout proposals. No wireframe exists for any of
+the eight surfaces, so these were built from the brief's required-elements
+lists and are meant to be reviewed running, in both languages, and changed.
+
+**What is deliberately missing:** every content specific the brief has not
+decided. Track subjects, prices and the team render as visible markers naming
+the decision that fills them — see [Open decisions](#open-decisions). Nothing
+is invented to make a page look finished, and no engineer is named who does not
+exist.
 
 ## Stack
 
 The repository was empty at handoff, so the framework was chosen here: **Next.js
-(App Router) + TypeScript**, with **next-intl** for the i18n layer and
-**Phosphor** for icons. Styling is plain CSS custom properties and the design
-system's own component classes — no utility framework, because the handoff's
-design system already ships a class layer to map onto rather than reinvent.
+(App Router) + TypeScript**, with **next-intl** for the i18n layer, **Supabase**
+for the backend and **Phosphor** for icons. Styling is plain CSS custom
+properties and the design system's own component classes — no utility
+framework, because the handoff's design system already ships a class layer to
+map onto rather than reinvent.
 
 ```bash
 npm install
@@ -38,6 +47,12 @@ npm run build
 | `src/i18n/` | Locale routing, request config, number and date formatting |
 | `src/proxy.ts` | Locale negotiation: cookie → Accept-Language → default |
 | `messages/{ar,en}.json` | Copy. Approved brand copy is used verbatim |
+| `src/content/` | Content for the built screens, shaped like the database rows. Everything undecided is marked `placeholder` with the decision that fills it |
+| `supabase/` | Schema, RLS policies and the test that exercises them — see `supabase/README.md` |
+| `src/lib/supabase/` | Typed client for browser and server, session refresh, introspected database types |
+| `/ar`, `/en` | Screen 01 — Home |
+| `/ar/tracks/[slug]` | Screen 02 — Track detail |
+| `/ar/services` | Screen 03 — Services and code review |
 | `/ar/system`, `/en/system` | The foundations reference page — tokens, type, direction and components in both languages. Not one of the eight screens |
 
 ## The RTL contract
@@ -78,6 +93,13 @@ than documented:
 - No horizontal overflow at 390px in either language.
 - Fonts are downloaded at build time and served from this origin (self-hosted),
   not from the Google CDN.
+- In the review excerpt, the diff is an LTR island while the engineer's comment
+  inside it follows the page: Arabic comment, English code, one block.
+- The schema applies to Postgres 16 and its policies were exercised — anonymous
+  visitors see published tracks and public profiles but no submissions and no
+  unshared results; a member sees their own work and not another's; an assigned
+  reviewer sees the submission; sharing a result is what makes it public; and an
+  insert on behalf of another member is refused. `supabase/tests/rls.sql`.
 
 ## Assumptions made, worth a look
 
@@ -96,14 +118,24 @@ than documented:
 
 ## Open decisions
 
-Blocking, from the handoff. The first four block the launch screens:
-
-| # | Decision | Blocks |
+| # | Decision | State |
 | --- | --- | --- |
-| 2 | Status colors — error / warning / success, and whether success gets a hue at all given the teal accent | forms everywhere, assessment results, review states |
-| 3 | Track list — which three launch, length, what each ends with | screens 01, 02 |
-| 4 | Prices — track, review, consulting day rate, even as bands | screens 02, 03 |
-| 5 | Team — names, roles, photos for 4–10 people | screens 01, 02 |
-| 6 | Screen wireframes — none of the eight has an approved layout | all eight |
-| 7 | Backend — no API, data model or auth decision exists | 04–08 |
+| 2 | Status colors | **Resolved.** Only failure states get a hue — danger `#ef8a7c`, warning `#e0a458`. Success is an accent check mark and a word, because a green close enough to read as success is close enough to read as a second accent. `src/styles/tokens.status.css` |
+| 3 | Track list | **Open.** Which three launch, how long, what each ends with. Track pages render the structure with subjects marked pending |
+| 4 | Prices | **Open.** Track price, review price, consulting day rate. Price slots are built and visibly empty — a wrong number on a buyer's page is a commercial claim |
+| 5 | Team | **Open.** Names, roles and photographs for 4–10 people. Nothing is invented here on purpose: a fabricated engineer on a page whose claim is "taught by practitioners" is the one lie the brand cannot afford |
+| 6 | Screen wireframes | **Resolved by proposal.** 01–03 are built as layout proposals to review running rather than as wireframes. 04–08 are not started |
+| 7 | Backend | **Resolved — Supabase.** Schema, RLS and client are in the repository and tested. No project is provisioned and nothing has been applied to a remote database |
+
+### What it takes to go further
+
+- **Provision Supabase.** No Deraya project exists in the account. Once one is
+  created, `supabase link` and `supabase db push` apply the migration, and
+  `.env.example` names the two variables the app needs.
+- **Screens 04–08** (assessment, public profile, community, dashboard, review
+  thread) all need the backend live and a decision on auth. The review thread
+  already has its component: `src/components/ReviewExcerpt.tsx` is the diff and
+  the line-anchored comment, built to grow into screen 08.
+- **Booking and enrollment flows** do not exist. Their CTAs are visible and
+  marked pending rather than linking somewhere that cannot honour them.
 

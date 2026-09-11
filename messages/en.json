@@ -11,7 +11,8 @@
     "community": "Community",
     "assessment": "Assessment",
     "foundations": "Foundations",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "tracks": "Tracks"
   },
   "language": {
     "label": "Language",
@@ -49,7 +50,8 @@
     "startTrack": "Start a track",
     "bookReview": "Book a review",
     "browseCommunity": "Browse community",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "viewTrack": "See the track"
   },
   "foundations": {
     "kicker": "Foundations",
@@ -116,5 +118,63 @@
     "topic": "Topic",
     "output": "Output",
     "reviewed": "Reviewed by"
+  },
+  "placeholder": {
+    "pending": "Pending decision",
+    "photo": "placeholder — no photography exists yet",
+    "person": "placeholder — engineer photo pending",
+    "price": "Price pending",
+    "proof": "placeholder — a real review, pending clearance",
+    "weeks": "Week subjects pending",
+    "enrollment": "Enrollment flow pending",
+    "booking": "Booking flow pending"
+  },
+  "home": {
+    "enginesKicker": "Two engines, one community",
+    "enginesTitle": "The people who teach are the people who build",
+    "enginesBody": "Deraya teaches AI to individuals and, with the same people, does the technical work. The teaching builds the credibility; the engineering work proves it.",
+    "learnTitle": "Learn",
+    "learnBody": "Courses, AI roadmaps, career tracks, job preparation, 1-on-1 sessions. Sold to individuals — students, career switchers, working developers.",
+    "buildTitle": "Build",
+    "buildBody": "Consultations, code review, GitHub and repo building, AI and programming solutions. Sold to teams and to the learners' own employers.",
+    "tracksKicker": "Tracks",
+    "tracksTitle": "Each one ends with something that runs",
+    "tracksBody": "Three tracks at launch. Every week has one output, and the ones marked reviewed get read line by line by an engineer.",
+    "proofKicker": "Proof",
+    "proofTitle": "A senior engineer reads your code and writes back.",
+    "proofBody": "Not a testimonial — a review comment on a repository, anchored to the line it is about. The code stays in English and reads left to right; the comment is in whichever language the thread is in.",
+    "teamKicker": "Taught by practitioners",
+    "teamTitle": "Named engineers, not a faculty page",
+    "teamBody": "Every instructor is someone who also does the consulting work.",
+    "weeks": "{count, plural, one {# week} other {# weeks}}",
+    "reviewedWeeks": "{count, plural, one {# reviewed submission} other {# reviewed submissions}}"
+  },
+  "track": {
+    "kicker": "Track",
+    "outlineTitle": "Week by week",
+    "projectsTitle": "What you will build",
+    "reviewTitle": "What gets reviewed, and by whom",
+    "reviewBody": "Every submission marked reviewed is read line by line by a named engineer, who writes back within 48 hours. You reply on the same thread.",
+    "prerequisitesTitle": "Prerequisites",
+    "prerequisitesBody": "Pending with the track list.",
+    "instructorTitle": "Instructor",
+    "priceTitle": "Price",
+    "portfolioTitle": "What the finished portfolio looks like",
+    "portfolioBody": "One repository a hiring manager can read: the project running, the tests, and the review thread that got it there.",
+    "outcomeTitle": "Ends with",
+    "weekColumn": "Week",
+    "topicColumn": "Topic",
+    "outputColumn": "Output",
+    "reviewColumn": "Reviewed",
+    "reviewedBadge": "Reviewed"
+  },
+  "services": {
+    "kicker": "Build",
+    "title": "Consulting, code review, and the work itself",
+    "intro": "Scope, turnaround and deliverable for each. Written for a buyer: what you get, when, and from whom.",
+    "scopeLabel": "Scope",
+    "deliverableLabel": "Deliverable",
+    "turnaroundLabel": "Turnaround",
+    "priceLabel": "Price"
   }
 }

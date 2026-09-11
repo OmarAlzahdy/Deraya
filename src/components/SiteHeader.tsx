@@ -27,7 +27,10 @@ export function SiteHeader() {
         </span>
       </Link>
 
-      <nav aria-label={t('nav.foundations')} className="row" style={{ gap: 'var(--space-6)' }}>
+      {/* Logged-out navigation. Only routes that exist are linked — the
+          community, assessment and dashboard screens are not built. */}
+      <nav aria-label={t('nav.learn')} className="row" style={{ gap: 'var(--space-6)' }}>
+        <Link href="/services">{t('nav.build')}</Link>
         <Link href="/system">{t('nav.foundations')}</Link>
       </nav>
 

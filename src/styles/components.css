@@ -525,3 +525,123 @@ textarea.input { min-block-size: 90px; resize: vertical; }
 .status-danger { color: var(--color-danger); }
 .status-warning { color: var(--color-warning); }
 .status-neutral { color: var(--color-text-muted); }
+
+/* ── Placeholder marker ───────────────────────────────────────────────────
+   Content the brief has not decided yet says so, in the interface. This is
+   deliberately unmissable: it is cheaper to see a gap than to discover an
+   invented specific shipped as fact.                                        */
+.placeholder-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-rule);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  /* Never stretches: in a column stack an inline-flex box would fill the row
+     and read as a field rather than a marker. */
+  align-self: start;
+  inline-size: fit-content;
+}
+:lang(ar) .placeholder-note {
+  font-family: var(--font-arabic);
+  font-size: var(--text-fine);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ── Diff ─────────────────────────────────────────────────────────────────
+   The product's own material as imagery. The whole block is an LTR island:
+   code, paths and line numbers never mirror. Additions take an accent tint
+   rather than a second green — the accent already sits in the diff's own
+   color family, which is part of why Signal was chosen.                     */
+.diff {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-mono);
+  font-size: var(--text-fine);
+  line-height: 1.75;
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.diff-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--text-kicker);
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+.diff-body {
+  overflow-x: auto;
+}
+
+.diff-line {
+  display: grid;
+  grid-template-columns: 3.5ch 2ch 1fr;
+  align-items: baseline;
+  column-gap: var(--space-2);
+  padding-inline: var(--space-3);
+  white-space: pre;
+  text-align: left; /* rtl-ok: code reads LTR in both directions */
+}
+
+.diff-num {
+  color: var(--color-rule);
+  font-variant-numeric: tabular-nums;
+  text-align: right; /* rtl-ok: line numbers align to the code, which is LTR */
+  user-select: none;
+}
+
+.diff-sign { user-select: none; }
+
+.diff-add { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.diff-add .diff-sign { color: var(--color-accent-300); }
+
+.diff-del { background: var(--tint-danger); }
+.diff-del .diff-sign { color: var(--color-danger); }
+
+/* A comment anchored to a line. The code above it is LTR; the comment itself
+   follows the page language, which is the whole point of the surface. */
+.review-comment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border-inline-start: 2px solid var(--color-accent);
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  line-height: var(--leading-small);
+  /* The comment follows the PAGE, not the diff it sits inside: `inherit` would
+     pick up the diff's LTR island and set an Arabic comment left-to-right.
+     Re-established from the document's own direction instead. */
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
+  white-space: normal;
+}
+
+[dir='rtl'] .review-comment {
+  direction: rtl;
+}
+
+.review-comment-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-fine);
+  color: var(--color-text-muted);
+}
