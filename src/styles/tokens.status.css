@@ -1,0 +1,44 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Status colors — open decision 2, resolved.
+
+   The constraint: the brand accent is a teal-green, which collides with the
+   conventional "success" green. A success color close enough to the accent to
+   read as green is close enough to read as a second accent, and the palette is
+   mono by design — one accent voice.
+
+   The resolution: **only failure states get a hue.** Danger and warning are
+   colors; success is an accent mark and a word. A green check beside a teal
+   interface buys nothing a check mark does not already say, and it costs the
+   palette its single voice.
+
+   That also matches where the product actually uses these: a review that
+   passed, a submission accepted, an assessment completed — all of them carry
+   text and a mark anyway. What genuinely needs color is the thing the reader
+   must not miss: a failed check, a blocked submission, an expired session.
+
+   Contrast, measured on the ground #111c1d / on --color-surface #1d2a2c:
+     --color-danger  #ef8a7c   7.12:1 / 6.05:1
+     --color-warning #e0a458   7.97:1 / 6.78:1
+   Both clear 4.5:1 on either ground, so each may carry body-size text.
+
+   Neither is a full ramp. They are two hues at one step each, with tints mixed
+   for fills — deliberately less machinery than the accent and neutral ramps
+   carry, because these appear in a handful of states rather than across the
+   interface. If status ever needs fills at several weights, generate real
+   100→900 ramps in OKLCH on the shared lightness scale (danger hue ~28,
+   warning hue ~70) and replace the color-mix tints below.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --color-danger: #ef8a7c;
+  --color-warning: #e0a458;
+
+  --tint-danger: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  --tint-warning: color-mix(in srgb, var(--color-warning) 14%, transparent);
+
+  /* Success resolves to the accent: the mark carries the meaning, the color
+     does not. Call sites use this name so a future decision to give success
+     its own hue is one line here rather than a search across the codebase. */
+  --color-success: var(--color-accent);
+  --tint-success: var(--tint-accent-hover);
+}

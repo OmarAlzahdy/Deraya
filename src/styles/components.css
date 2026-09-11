@@ -507,3 +507,21 @@ textarea.input { min-block-size: 90px; resize: vertical; }
   white-space: nowrap;
   border: 0;
 }
+
+/* ── Status ───────────────────────────────────────────────────────────────
+   A mark plus a word, always — the mark is what carries the meaning, and
+   color only ever reinforces it. Success has no hue of its own on purpose
+   (see tokens.status.css), so it must never be signalled by color alone.    */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-small);
+  line-height: var(--leading-small);
+}
+.status svg { flex: none; }
+
+.status-success { color: var(--color-success); }
+.status-danger { color: var(--color-danger); }
+.status-warning { color: var(--color-warning); }
+.status-neutral { color: var(--color-text-muted); }

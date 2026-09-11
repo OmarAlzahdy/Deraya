@@ -1,7 +1,7 @@
 /* The one stylesheet, assembled in cascade order. Import this and nothing else.
    Every color, font, space, radius and shadow below comes from tokens.css. */
 @import './tokens.css';
-@import './tokens.status.proposal.css'; /* pending approval — open decision 2 */
+@import './tokens.status.css';
 @import './base.css';
 @import './rtl.css';
 @import './layout.css';
