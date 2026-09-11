@@ -1,0 +1,107 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RTL — a layout mode, not a stylesheet fork.
+
+   Direction is carried by one attribute on <html> (dir="rtl" for Arabic) and
+   every layout rule in this codebase is written in logical properties, so
+   nothing below flips a layout. What is here is the set of things logical
+   properties cannot express:
+
+     1. Glyphs that must mirror (arrows, chevrons, back/forward, progress).
+     2. Content that must NOT mirror and stays LTR inside an RTL page:
+        numbers, code blocks, repo paths, diffs, terminal output, file trees,
+        URLs.
+     3. Kickers, which cannot be built the same way in both languages: Latin
+        uses uppercase + tracking, Arabic has no case and is never tracked,
+        so it uses size and color instead.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Mirroring ─────────────────────────────────────────────────────────
+   Opt in per icon. Only directional glyphs take this — an arrow, a chevron,
+   a back/forward control, a progress indicator. A clock, a check, a logo, a
+   play triangle and a magnifier do not. The Icon component's `directional`
+   prop is the intended way to apply it.                                     */
+[dir='rtl'] .mirror-rtl {
+  transform: scaleX(-1);
+}
+
+/* ── 2. Direction islands ─────────────────────────────────────────────────
+   `isolate` keeps the run from reordering its neighbours in a mixed
+   paragraph; `direction: ltr` sets the run itself. Use .ltr for a bare run
+   (a number, a repo path, a URL, an English technical term) and .code-block
+   for anything preformatted.                                                */
+.ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Inline-block-level runs keep their own text-align so a code line does not
+   pick up the paragraph's `end` alignment. */
+.code-block {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: left; /* rtl-ok: code reads LTR in both directions */
+  font-family: var(--font-mono);
+  font-size: var(--text-fine);
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+/* Numbers. Latin digits in both locales — see the locale note in
+   src/i18n/format.ts. Tabular figures so columns of them line up. */
+.num {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 3. Kickers ───────────────────────────────────────────────────────────
+   Latin: 11px mono, uppercase, 0.16em tracking.
+   Arabic: never uppercased, never tracked — the same role is carried by size
+   and color, and the label sets in the Arabic face rather than the mono one. */
+.kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-kicker);
+  font-weight: 400;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-kicker);
+  color: var(--color-accent);
+}
+
+:lang(ar) .kicker {
+  font-family: var(--font-arabic);
+  font-size: var(--text-small);
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: var(--leading-small);
+}
+
+/* A kicker that is a code fragment or a Latin technical term inside an
+   Arabic page keeps the mono treatment — it is not Arabic text. */
+:lang(ar) .kicker.ltr {
+  font-family: var(--font-mono);
+  font-size: var(--text-kicker);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-kicker);
+}
+
+/* ── 4. Language runs ─────────────────────────────────────────────────────
+   A run of one language inside a page set in the other — the wordmark دراية
+   on an English page, "English" on an Arabic one, an Arabic quotation in an
+   English paragraph. It takes that language's face and is isolated so it
+   cannot reorder its neighbours. Opt in per element, alongside a `lang`
+   attribute; a bare :lang() rule here would outrank the mono and heading
+   families set elsewhere.                                                   */
+.lang-run {
+  unicode-bidi: isolate;
+}
+.lang-run:lang(ar) {
+  font-family: var(--font-arabic);
+  line-height: max(1.5, 1em);
+}
+.lang-run:lang(en) {
+  font-family: var(--font-latin);
+}

@@ -1,0 +1,120 @@
+{
+  "brand": {
+    "wordmarkAr": "دراية",
+    "wordmarkLatin": "Deraya",
+    "positioning": "An AI school and an engineering practice, in one place — from zero to production, in Arabic and English."
+  },
+  "nav": {
+    "skipToContent": "Skip to content",
+    "learn": "Learn",
+    "build": "Build",
+    "community": "Community",
+    "assessment": "Assessment",
+    "foundations": "Foundations",
+    "signIn": "Sign in"
+  },
+  "language": {
+    "label": "Language",
+    "switchTo": "Switch to Arabic",
+    "current": "English"
+  },
+  "hero": {
+    "headline": "Learn AI from engineers who ship it.",
+    "subhead": "Career tracks, real code review, and a working project at the end.",
+    "supporting": {
+      "one": "Twelve weeks. Four projects. One reviewed repo.",
+      "two": "A senior engineer reads your code and writes back.",
+      "three": "Taught in Arabic. Code in English."
+    }
+  },
+  "principles": {
+    "proof": {
+      "title": "Proof over promise",
+      "body": "Show the repo, the review, the shipped project. Never a claim without an artifact behind it."
+    },
+    "practitioners": {
+      "title": "Taught by practitioners",
+      "body": "Every instructor is someone who also does the consulting work. Named faces, real profiles."
+    },
+    "arabic": {
+      "title": "Arabic, without apology",
+      "body": "Arabic is a first-class language here, not a translation layer. Code and terms stay in English."
+    },
+    "production": {
+      "title": "From zero to production",
+      "body": "Nothing stops at a certificate. The endpoint of every track is something running."
+    }
+  },
+  "cta": {
+    "startTrack": "Start a track",
+    "bookReview": "Book a review",
+    "browseCommunity": "Browse community",
+    "cancel": "Cancel"
+  },
+  "foundations": {
+    "kicker": "Foundations",
+    "title": "Tokens, type and direction",
+    "intro": "The Signal palette, the type scale and the component classes, rendered in both languages. This page is the reference for the layer the screens will be built on — it is not one of the eight screens.",
+    "notice": "The eight product screens have no approved layouts yet. This build stops at the foundation on purpose.",
+    "color": {
+      "title": "Color",
+      "body": "One accent voice on a deep petrol ground. Steps 700–900 for tinted fills and borders, 500 as the base, 100–300 for text on those tints. The accent is a line, a mark and a glow — never a flood.",
+      "accentRamp": "Accent ramp — teal, hue 177",
+      "neutralRamp": "Neutral ramp — hue 205",
+      "contrastNote": "Measured on the ground: text 14.8:1, accent 6.79:1, neutral-500 5.61:1. Neutral-600 is 3.45:1 — rules and borders only, never readable copy."
+    },
+    "type": {
+      "title": "Typography",
+      "body": "Inter for Latin, IBM Plex Sans Arabic for Arabic, IBM Plex Mono for code. One weight does the work: 500 for headings, 400 for body. Hierarchy is size and space, never a heavier weight.",
+      "displaySample": "From zero to production",
+      "headingSample": "Career tracks built on real projects",
+      "bodySample": "Each track ends with a repository a hiring manager can read. You get line-level review on every submission.",
+      "arabicNote": "Arabic runs at 1.5 line-height minimum, and is never set in all-caps, letter-spaced, or condensed."
+    },
+    "direction": {
+      "title": "Direction",
+      "body": "Direction is one attribute on the document. Layout CSS is written in logical properties, so the whole page mirrors without a second stylesheet. What does not mirror is content: numbers, code, repo paths, diffs and URLs keep their own LTR run inside an Arabic page.",
+      "mirrorLabel": "Mirrors — arrows, chevrons, progress",
+      "staysLabel": "Stays LTR — code, paths, numbers, URLs",
+      "mixedLabel": "Mixed direction in one paragraph",
+      "mixedSample": "The review lands on branch feat/rag-eval in omar/rag-service, 3 files changed, and the engineer replies within 48 hours."
+    },
+    "components": {
+      "title": "Components",
+      "body": "The design system's classes, mapped onto the component layer. The primary action is a 1px accent outline on transparent, never a fill. Interaction states are built in — hover is an accent tint, pressed is one step past the base, focus is a 2px accent ring.",
+      "buttons": "Buttons",
+      "tags": "Tags",
+      "forms": "Forms",
+      "cards": "Cards",
+      "table": "Table",
+      "loading": "Loading",
+      "imagery": "Imagery"
+    },
+    "spacing": {
+      "title": "Spacing and elevation",
+      "body": "A 0.70× density scale — dense on purpose, and it holds on mobile. Radii are 8px by default. Elevation is an edge plus ambient darkness, never stacked shadows."
+    },
+    "placeholder": {
+      "photo": "placeholder — no photography exists yet",
+      "logo": "placeholder lockup — a real mark needs to be commissioned",
+      "tableRows": "placeholder rows — the launch track list is not decided yet"
+    }
+  },
+  "form": {
+    "emailLabel": "Work email",
+    "emailPlaceholder": "you@company.com",
+    "emailError": "Enter an email address you can receive review notes at.",
+    "repoLabel": "Repository",
+    "gradingLabel": "Grading",
+    "gradingAi": "AI-graded",
+    "gradingHuman": "Human-reviewed",
+    "notesLabel": "What should the reviewer look at?",
+    "languageLabel": "Answer in"
+  },
+  "table": {
+    "week": "Week",
+    "topic": "Topic",
+    "output": "Output",
+    "reviewed": "Reviewed by"
+  }
+}

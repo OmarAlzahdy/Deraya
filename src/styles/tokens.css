@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Deraya — design tokens
+
+   The Signal palette (direction 1c, chosen by the founder). Ramps were
+   generated in OKLCH on one shared lightness scale — accent hue 177, neutrals
+   hue 205 — so step N of one ramp matches step N of the other in visual
+   weight. Structure (spacing, radii, elevation, component classes) comes from
+   the Nocturne design system; its colors are superseded by the values here.
+
+   Never hard-code a hex, a font name, or a raw px value a token already
+   carries. Where a role and a ramp step both exist, prefer the role.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: dark;
+
+  /* ── Ground and roles ─────────────────────────────────────────────────── */
+  --color-bg: #111c1d;              /* deep petrol ground                    */
+  --color-surface: #1d2a2c;         /* cards, raised panels                  */
+  --color-surface-sunken: #172324;  /* inset / quieter panels                */
+  --color-text: #e7eeef;            /* 14.8:1 on ground                      */
+  --color-accent: #50b29d;          /* 6.79:1 on ground — may carry body text */
+  --color-divider: color-mix(in srgb, #e7eeef 16%, transparent);
+
+  /* Full-bleed band only — at most one per page. Never an interface fill. */
+  --color-section: #063c32;
+  --color-section-glow: #0c5d4f;
+  --color-section-ghost: #1d806e;
+
+  /* ── Tonal ramps ──────────────────────────────────────────────────────── */
+  /* Accent — teal, hue 177. This is a mono palette: there is no second accent. */
+  --color-accent-100: #e5f6f1;
+  --color-accent-200: #c8eee4;
+  --color-accent-300: #9eddcd;
+  --color-accent-400: #6dc4b0;
+  --color-accent-500: #3ca691;
+  --color-accent-600: #1d806e;
+  --color-accent-700: #0c5d4f;
+  --color-accent-800: #063c32;
+  --color-accent-900: #06201a;
+
+  /* Neutral — hue 205. */
+  --color-neutral-100: #ebf4f5;
+  --color-neutral-200: #dce7e8;
+  --color-neutral-300: #c4d1d2;
+  --color-neutral-400: #a6b4b6;
+  --color-neutral-500: #879597;
+  --color-neutral-600: #657173;
+  --color-neutral-700: #475253;
+  --color-neutral-800: #2c3536;
+  --color-neutral-900: #151c1d;
+
+  /* ── Text roles, by measured contrast on the ground ───────────────────── */
+  /* Readable copy only from these. neutral-600 is 3.45:1 — never body text.  */
+  --color-text-secondary: var(--color-neutral-300); /* 10.4:1 — long reading  */
+  --color-text-muted: var(--color-neutral-500);     /*  5.61:1 on bg, 4.77 on surface */
+  --color-text-accent: var(--color-accent);         /*  6.79:1                */
+  --color-rule: var(--color-neutral-600);           /*  3.45:1 — rules, borders, never copy */
+
+  /* ── Interaction tints ────────────────────────────────────────────────── */
+  /* Hover is an accent tint; pressed is one step past the base (accent-400
+     on this dark ground), or a heavier tint for outlined and ghost variants. */
+  --tint-accent-hover: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  --tint-accent-press: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  --tint-neutral-hover: color-mix(in srgb, var(--color-text) 7%, transparent);
+  --tint-neutral-press: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --color-pressed: var(--color-accent-400);
+  --opacity-disabled: 0.45;
+
+  /* ── Typography ───────────────────────────────────────────────────────── */
+  /* The --font-*-family vars are set by next/font in the root layout. */
+  --font-latin: var(--font-inter), system-ui, sans-serif;
+  --font-arabic: var(--font-plex-arabic), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Resolved per language below. Latin is the default. */
+  --font-heading: var(--font-latin);
+  --font-body: var(--font-latin);
+  --font-heading-weight: 500; /* never bolder — hierarchy is size and space */
+  --font-body-weight: 400;
+
+  /* Scale, from the brief. */
+  --text-display: 44px;
+  --text-page: clamp(28px, 4vw, 38px);
+  --text-section: 28px;
+  --text-card-title: 19px;
+  --text-body: 16px;
+  --text-small: 14.5px;
+  --text-fine: 13px;
+  --text-kicker: 11px;
+
+  /* Line-height and tracking. Both are re-set for Arabic below: Arabic runs
+     taller and is never letter-spaced. */
+  --leading-display: 1.05;
+  --leading-heading: 1.15;
+  --leading-title: 1.25;
+  --leading-body: 1.65;
+  --leading-small: 1.6;
+  --tracking-display: -0.02em;
+  --tracking-heading: -0.015em;
+  --tracking-kicker: 0.16em;
+
+  /* ── Spacing — 0.70× density (base unit 4px × 0.7 = 2.8px) ───────────── */
+  /* Dense on purpose; do not inflate on mobile. The scale continues the same
+     N × 2.8px formula past the six steps the brief lists. */
+  --space-1: 2.8px;
+  --space-2: 5.6px;
+  --space-3: 8.4px;
+  --space-4: 11.2px;
+  --space-6: 16.8px;
+  --space-8: 22.4px;
+  --space-12: 33.6px;
+  --space-16: 44.8px;
+  --space-24: 67.2px;
+  --space-32: 89.6px;
+
+  /* ── Radius ───────────────────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px; /* the default */
+  --radius-lg: 14px;
+
+  /* ── Elevation — an edge plus ambient darkness, never stacked shadows ─── */
+  --shadow-sm: 0 0 0 1px #2c3536;
+  --shadow-md: 0 0 0 1px #475253, 0 6px 18px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 0 0 1px #879597, 0 16px 40px rgba(0, 0, 0, 0.65);
+
+  /* ── Motion — restrained. Opacity and small translations only. ────────── */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --measure: 66ch;          /* reading width for body copy                   */
+  --measure-tight: 48ch;
+  --page-max: 1080px;
+  --page-gutter: var(--space-8);
+  --hit-target: 44px;       /* never smaller, at any breakpoint              */
+  --rule-fade: 48px;        /* rules fade to transparent over this distance  */
+}
+
+/* ── Arabic ────────────────────────────────────────────────────────────────
+   Not a stylesheet fork — the same tokens, re-resolved. Arabic runs at 1.5
+   line-height minimum (taller than the Latin equivalent) and is never
+   letter-spaced, all-caps, or condensed.                                    */
+:root:lang(ar) {
+  --font-heading: var(--font-arabic);
+  --font-body: var(--font-arabic);
+
+  --leading-display: 1.5;
+  --leading-heading: 1.5;
+  --leading-title: 1.5;
+  --leading-body: 1.85;
+  --leading-small: 1.8;
+
+  --tracking-display: 0;
+  --tracking-heading: 0;
+  --tracking-kicker: 0;
+}

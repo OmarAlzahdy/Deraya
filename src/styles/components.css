@@ -1,0 +1,509 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Components — the Nocturne class layer, re-tinted to Signal and rewritten in
+   logical properties. These are the classes the design system ships; the React
+   components in src/components/ui render them rather than inventing parallel
+   styling. Interaction states are built in here — do not restyle them per page.
+
+   Changed from the source system, deliberately:
+     · colors come from the Signal tokens
+     · .tag-accent-2 is gone — mono palette, one accent voice
+     · every left/right became inline-start/inline-end
+     · hit targets never fall below --hit-target on coarse pointers
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* ── Rules ────────────────────────────────────────────────────────────────
+   Freestanding rules fade to transparent over 48px an end rather than
+   stopping hard. Box outlines, in-control separators and short accent marks
+   stay solid. The system prefers whitespace to rules — .hr exists; avoid it. */
+.hr {
+  height: 1px;
+  border: 0;
+  margin-block: var(--space-4);
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-divider) var(--rule-fade),
+    var(--color-divider) calc(100% - var(--rule-fade)),
+    transparent
+  );
+}
+
+/* A section's leading rule — the same fade, used as a border-block-start
+   substitute so section heads do not need .hr elements. */
+.rule-top {
+  padding-block-start: var(--space-12);
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-divider) var(--rule-fade),
+    var(--color-divider) calc(100% - var(--rule-fade)),
+    transparent
+  ) no-repeat top / 100% 1px;
+}
+
+/* Short accent marks stay solid. */
+.mark-accent {
+  inline-size: 28px;
+  block-size: 2px;
+  border: 0;
+  margin: 0;
+  background: var(--color-accent);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────
+   The primary is a 1px accent outline on transparent — never a fill. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-small);
+  line-height: 1.2;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border-radius: var(--radius-md);
+  min-block-size: 32px;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.btn-primary:not(:disabled):hover { background: var(--tint-accent-hover); }
+.btn-primary:not(:disabled):active {
+  background: var(--tint-accent-press);
+  color: var(--color-pressed);
+  border-color: var(--color-pressed);
+}
+
+.btn-secondary { border-color: var(--color-divider); }
+.btn-secondary:not(:disabled):hover { background: var(--tint-neutral-hover); }
+.btn-secondary:not(:disabled):active { background: var(--tint-neutral-press); }
+
+.btn-ghost {
+  color: var(--color-accent);
+  padding-inline: var(--space-1);
+}
+.btn-ghost:not(:disabled):hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.btn-ghost:not(:disabled):active {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-pressed);
+}
+
+.btn-icon {
+  inline-size: 36px;
+  block-size: 36px;
+  padding: 0;
+}
+
+.btn-block {
+  inline-size: 100%;
+  margin-block-start: var(--space-2);
+}
+
+/* Touch and stylus: hit targets never below 44px. Only the control's own
+   block size grows — the spacing scale is not inflated on mobile. */
+@media (pointer: coarse) {
+  .btn { min-block-size: var(--hit-target); }
+  .btn-icon { inline-size: var(--hit-target); block-size: var(--hit-target); }
+  .seg-opt { min-block-size: var(--hit-target); }
+}
+
+/* ── Tags ─────────────────────────────────────────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-kicker);
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  border-radius: calc(var(--radius-md) * 0.75);
+}
+:lang(ar) .tag { letter-spacing: 0; }
+
+.tag-accent { background: var(--color-accent-800); color: var(--color-accent-100); }
+.tag-neutral { background: var(--color-neutral-800); color: var(--color-neutral-100); }
+.tag-outline { border: 1px solid var(--color-accent); color: var(--color-accent); }
+
+/* ── Cards ────────────────────────────────────────────────────────────── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-kicker {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+:lang(ar) .card-kicker:not(.ltr) {
+  font-family: var(--font-arabic);
+  font-size: var(--text-fine);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-card-title);
+  line-height: var(--leading-title);
+}
+
+.card-body {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-small);
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-kicker);
+  color: var(--color-text-muted);
+}
+
+.elev-sm { box-shadow: var(--shadow-sm); }
+.elev-md { box-shadow: var(--shadow-md); }
+.elev-lg { box-shadow: var(--shadow-lg); }
+
+/* Sunken panel — the quieter inset surface. */
+.panel-sunken {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+/* ── Forms ────────────────────────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field > label {
+  font-size: var(--text-fine);
+  color: var(--color-text-secondary);
+}
+
+.input {
+  inline-size: 100%;
+  min-block-size: 36px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: var(--text-small);
+  color: var(--color-text);
+  caret-color: var(--color-accent);
+  background: var(--color-surface);
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  text-align: start;
+}
+.input::placeholder { color: var(--color-text-muted); }
+.input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+textarea.input { min-block-size: 90px; resize: vertical; }
+
+/* Validation message, below the field. Inline on blur — see Field. */
+.field-message {
+  font-size: var(--text-fine);
+  line-height: var(--leading-small);
+  color: var(--color-text-muted);
+}
+.field-message-error { color: var(--color-danger); } /* proposal — open decision 2 */
+.input[aria-invalid='true'] { border-color: var(--color-danger); }
+.input[aria-invalid='true']:focus-visible { outline-color: var(--color-danger); }
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: var(--text-small);
+  min-block-size: var(--hit-target);
+}
+
+.radio input,
+.seg-opt input {
+  position: absolute;
+  opacity: 0;
+  inline-size: 0;
+  block-size: 0;
+  pointer-events: none;
+}
+
+.radio .dot {
+  inline-size: 16px;
+  block-size: 16px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-divider);
+}
+.radio:hover .dot { border-color: var(--color-accent); }
+.radio input:checked + .dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 4px var(--color-bg);
+}
+.radio input:focus-visible + .dot {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.seg {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+}
+
+.seg-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  font-size: var(--text-fine);
+  line-height: 1.4;
+  cursor: pointer;
+  min-block-size: 34px;
+}
+.seg-opt + .seg-opt { border-inline-start: 1px solid var(--color-divider); }
+.seg-opt:has(input:checked) {
+  color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+.seg-opt:not(:has(input:checked)):hover { background: var(--tint-neutral-hover); }
+.seg-opt:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+
+/* ── Navigation ───────────────────────────────────────────────────────── */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border-block-end: none;
+}
+
+.nav-brand {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 18px;
+  margin-inline-end: auto;
+  border: 0;
+  color: inherit;
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  border: 0;
+  font-size: var(--text-small);
+}
+.nav a:hover,
+.nav a[aria-current='page'] { color: var(--color-accent); }
+
+/* ── Tables ───────────────────────────────────────────────────────────── */
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+
+.table th {
+  text-align: start;
+  font-family: var(--font-mono);
+  font-size: var(--text-kicker);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  padding: var(--space-2);
+  border-block-end: 1px solid transparent; /* the row paints the fading rule */
+}
+:lang(ar) .table th {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: var(--text-fine);
+}
+
+.table td {
+  padding: var(--space-2);
+  border-block-end: 1px solid transparent;
+  text-align: start;
+}
+
+/* Row rules as row-level strips so the end-fade spans the row, not each cell. */
+.table thead tr {
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-divider) var(--rule-fade),
+    var(--color-divider) calc(100% - var(--rule-fade)),
+    transparent
+  ) no-repeat bottom / 100% 1px;
+}
+
+.table tbody tr {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--color-text) 8%, transparent) var(--rule-fade),
+    color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - var(--rule-fade)),
+    transparent
+  ) no-repeat bottom / 100% 1px;
+}
+
+.table tbody tr:hover {
+  background:
+    linear-gradient(var(--tint-neutral-hover), var(--tint-neutral-hover)) no-repeat 0 0 / 100% 100%,
+    linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--color-text) 8%, transparent) var(--rule-fade),
+      color-mix(in srgb, var(--color-text) 8%, transparent) calc(100% - var(--rule-fade)),
+      transparent
+    ) no-repeat bottom / 100% 1px;
+}
+
+/* ── Dialog ───────────────────────────────────────────────────────────── */
+/* The class sets `display`, which would otherwise defeat the UA rule that
+   hides a closed <dialog> — so the closed state is restated here. */
+.dialog:not([open]) { display: none; }
+
+.dialog {
+  inline-size: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+}
+.dialog::backdrop {
+  background: color-mix(in srgb, #000 62%, transparent);
+}
+
+.dialog-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: 20px;
+  line-height: var(--leading-title);
+}
+
+.dialog-body {
+  font-size: var(--text-small);
+  line-height: var(--leading-small);
+  color: var(--color-text-secondary);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}
+
+/* ── Imagery ──────────────────────────────────────────────────────────────
+   Every content photograph goes through .lighten: dark values fall away into
+   the page. Photographs are shot on dark or black backgrounds.              */
+.lighten {
+  mix-blend-mode: lighten;
+  background-color: transparent;
+}
+
+/* No photography exists yet. Placeholders are striped blocks with a mono
+   caption, and every one of them is flagged in the UI as a placeholder. */
+.placeholder-media {
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      var(--color-surface) 0 10px,
+      var(--color-surface-sunken) 10px 20px
+    );
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-kicker);
+  text-align: center;
+  padding: var(--space-6);
+}
+
+/* ── Loading ──────────────────────────────────────────────────────────────
+   Skeletons built from --color-surface on --color-bg, not spinners.         */
+.skeleton {
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--color-text) 5%, transparent),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s var(--ease-standard) infinite;
+}
+@keyframes skeleton-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ── Full-bleed band ──────────────────────────────────────────────────────
+   At most one per page. The single place a saturated fill is allowed.       */
+.band {
+  background:
+    radial-gradient(120% 140% at 50% 0%, var(--color-section-glow), transparent 60%),
+    var(--color-section);
+  color: var(--color-text);
+  padding-block: var(--space-16);
+}
+
+/* ── Visually hidden, but read ────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROPOSED status colors — NOT YET APPROVED
+
+   Open decision 2 in the handoff: the token set ships no error / success /
+   warning scale. Forms need one now (inline validation on blur, error text
+   below the field), so this file carries a proposal, isolated in one file so
+   approving or replacing it touches nothing else.
+
+   The constraint the handoff names: the accent is a teal-green, which
+   collides with the conventional "success" green. Two ways out, and this
+   file implements both so either can be switched on:
+
+   A. Success is not a color (default here, --status-success-mode: mark).
+      Success is signalled with an accent check mark and a word. Only danger
+      and warning get hues. Nothing in the product then reads as a second
+      accent, which is what the mono-palette rule is protecting.
+
+   B. Success gets its own hue (--color-success below), pushed far enough
+      toward yellow-green (OKLCH hue ~135 against the accent's 177) to read
+      as a different color rather than a lighter accent.
+
+   Contrast, measured on the ground #111c1d / on --color-surface #1d2a2c:
+     --color-danger  #ef8a7c   7.12:1 / 6.05:1
+     --color-warning #e0a458   7.97:1 / 6.78:1
+     --color-success #8cc861   8.74:1 / 7.43:1
+   All three clear 4.5:1 on both grounds, so each may carry body-size text.
+
+   Ramp steps are not generated for these — they are tints mixed from the base
+   for fills and borders only, the same weight the accent tints carry.
+   If the proposal is approved, generate real 100→900 ramps in OKLCH on the
+   shared lightness scale and replace the color-mix tints here.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --color-danger: #ef8a7c;
+  --color-warning: #e0a458;
+  --color-success: #8cc861;
+
+  --tint-danger: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  --tint-warning: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  --tint-success: color-mix(in srgb, var(--color-success) 14%, transparent);
+
+  /* `mark` = option A: success is an accent mark and a word, no success hue.
+     `color` = option B: success uses --color-success. */
+  --status-success-mode: mark;
+  --color-success-resolved: var(--color-accent);
+}

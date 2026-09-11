@@ -1,0 +1,71 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Layout utilities — asymmetric and flush to the leading edge.
+
+   Content hugs the leading edge (left in English, right in Arabic) and
+   whitespace sits on the trailing side. Columns are never centered. All of it
+   is written in logical properties, so the same rules produce the mirrored
+   layout under dir="rtl" with no second stylesheet.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* The page shell. Flush to the leading edge with the trailing side left open —
+   not `margin-inline: auto`. */
+.page {
+  max-inline-size: var(--page-max);
+  margin-inline: 0;
+  padding-inline: var(--page-gutter);
+  padding-block: var(--space-16) var(--space-32);
+}
+
+/* A section, separated by space rather than a rule wherever possible. */
+.section {
+  margin-block-start: var(--space-24);
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block-end: var(--space-8);
+}
+
+/* Stacks and rows. `gap` is direction-agnostic; `row` wraps and reverses
+   automatically because flex follows the inline direction. */
+.stack { display: flex; flex-direction: column; }
+.stack-1 { gap: var(--space-1); }
+.stack-2 { gap: var(--space-2); }
+.stack-3 { gap: var(--space-3); }
+.stack-4 { gap: var(--space-4); }
+.stack-6 { gap: var(--space-6); }
+.stack-8 { gap: var(--space-8); }
+.stack-12 { gap: var(--space-12); }
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.row-baseline { align-items: baseline; }
+.row-start { justify-content: flex-start; }
+.row-end { justify-content: flex-end; }
+
+/* Auto-fitting card grids. */
+.grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+.grid-wide {
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+}
+
+/* Mobile-first: cards stack below this width and the dense scale holds. */
+@media (max-width: 640px) {
+  :root {
+    --page-gutter: var(--space-6);
+  }
+  .grid,
+  .grid-wide {
+    grid-template-columns: 1fr;
+  }
+}
