@@ -1272,3 +1272,143 @@ textarea.input {
   color: var(--color-text-muted);
   text-align: center;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Depth and rhythm.
+
+   A page of identical dark rectangles reads as flat however well the grid is
+   built. These give a long page variety without breaking the mono palette:
+   one soft accent bloom behind the hero, and a slightly raised surface for
+   alternating sections so the eye has something to measure progress against.
+   Neither is a saturated fill — the accent stays a glow, as the brief says.
+   ═════════════════════════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(var(--space-24) * -1);
+  inset-inline-start: -10%;
+  inline-size: 70%;
+  block-size: 120%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 50% at 30% 30%,
+    color-mix(in srgb, var(--color-accent) 14%, transparent),
+    transparent 70%
+  );
+}
+
+/* An alternating surface, full-bleed, quieter than the accent band. A page may
+   carry several of these; it may carry only one .band. */
+.section-surface {
+  background: var(--color-surface-sunken);
+  padding-block: var(--section-gap);
+  margin-block-start: var(--section-gap);
+  background-image:
+    linear-gradient(
+      to right,
+      transparent,
+      var(--color-divider) var(--rule-fade),
+      var(--color-divider) calc(100% - var(--rule-fade)),
+      transparent
+    ),
+    linear-gradient(
+      to right,
+      transparent,
+      var(--color-divider) var(--rule-fade),
+      var(--color-divider) calc(100% - var(--rule-fade)),
+      transparent
+    );
+  background-repeat: no-repeat, no-repeat;
+  background-position: top, bottom;
+  background-size: 100% 1px, 100% 1px;
+}
+
+/* ── Icon tile ────────────────────────────────────────────────────────────
+   A Phosphor glyph on a tinted square. Small, quiet, and the only ornament
+   the system carries — it gives a card a focal point without an image.      */
+.icon-tile {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 38px;
+  block-size: 38px;
+  flex: none;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+/* ── Steps ────────────────────────────────────────────────────────────────
+   How the thing actually works, numbered. Real content in the space the
+   unnamed team placeholders used to occupy.                                 */
+.steps {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  counter-reset: step;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--flow-2);
+  padding-block-start: var(--space-6);
+  background: linear-gradient(
+    to right,
+    var(--color-divider),
+    color-mix(in srgb, var(--color-divider) 30%, transparent)
+  ) no-repeat top / 100% 1px;
+}
+
+.step-number {
+  font-family: var(--font-mono);
+  font-size: var(--text-kicker);
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+}
+
+:lang(ar) .step-number { letter-spacing: 0; }
+
+.step-title {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-card-title);
+  line-height: var(--leading-title);
+}
+
+.step-body {
+  font-size: var(--text-small);
+  line-height: var(--leading-small);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* ── Closing call to action ───────────────────────────────────────────── */
+.cta-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--flow-4);
+  align-items: flex-start;
+  padding: var(--space-16);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(100% 140% at 0% 0%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 60%),
+    var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Code tokens ──────────────────────────────────────────────────────────
+   Syntax colour inside the mono palette: accent shades and neutrals only, so
+   a diff still reads as part of the same system. Keywords carry the accent,
+   strings a lighter neutral, punctuation recedes.                           */
+.tok-keyword { color: var(--color-accent-300); }
+.tok-string { color: var(--color-neutral-300); }
+.tok-number { color: var(--color-accent-200); }
+.tok-punct { color: var(--color-neutral-500); }
+.tok-comment { color: var(--color-neutral-600); font-style: italic; }

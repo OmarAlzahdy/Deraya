@@ -159,7 +159,19 @@
     "engineLearn": "Engine one",
     "engineBuild": "Engine two",
     "seeAllTracks": "All tracks",
-    "proofNote": "A real thread, on a real repository."
+    "proofNote": "How a review reads. The code is English and left to right; the comment follows the thread.",
+    "stepsKicker": "How it works",
+    "stepsTitle": "From enrolment to a reviewed repository",
+    "step1Title": "Pick a track",
+    "step1Body": "Every track states what it ends with before you start, and which weeks an engineer reads.",
+    "step2Title": "Build each week",
+    "step2Body": "One output a week, in a repository of your own. No exercises that go nowhere.",
+    "step3Title": "Get it reviewed",
+    "step3Body": "A senior engineer reads the submission line by line and writes back. You reply on the same thread.",
+    "step4Title": "Ship it",
+    "step4Body": "The track ends with something running and a repository a hiring manager can read.",
+    "ctaTitle": "Start where you are",
+    "ctaBody": "Take a track, or bring a repository and have an engineer read it."
   },
   "track": {
     "kicker": "Track",
@@ -178,7 +190,8 @@
     "topicColumn": "Topic",
     "outputColumn": "Output",
     "reviewColumn": "Reviewed",
-    "reviewedBadge": "Reviewed"
+    "reviewedBadge": "Reviewed",
+    "priceOnRequest": "On request"
   },
   "services": {
     "kicker": "Build",
@@ -188,7 +201,8 @@
     "deliverableLabel": "Deliverable",
     "turnaroundLabel": "Turnaround",
     "priceLabel": "Price",
-    "empty": "No services published yet."
+    "empty": "No services published yet.",
+    "priceOnRequest": "On request"
   },
   "auth": {
     "kicker": "Account",

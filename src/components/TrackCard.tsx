@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl';
 import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
 import { Link } from '@/i18n/navigation';
 import { Num } from '@/components/ui/Bidi';
-import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
 import type { Track } from '@/content/tracks';
 import { pick } from '@/content/types';
 import type { Locale } from '@/i18n/routing';
@@ -42,7 +41,7 @@ export function TrackCard({ track, locale }: { track: Track; locale: Locale }) {
             <Num>{(track.priceMinor / 100).toLocaleString('en-US')}</Num> {track.currency}
           </span>
         ) : (
-          <PlaceholderNote>{t('placeholder.price')}</PlaceholderNote>
+          <span className="t-small text-muted">{t('track.priceOnRequest')}</span>
         )}
         <span style={{ marginInlineStart: 'auto' }} className="text-accent" aria-hidden>
           <ArrowRight size={14} className="mirror-rtl" />

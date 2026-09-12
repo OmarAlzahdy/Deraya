@@ -44,3 +44,13 @@ export const people: Person[] = [
 export function getPerson(id: string) {
   return people.find((person) => person.id === id);
 }
+
+/**
+ * The people a public page may show: the ones with real names.
+ *
+ * Public surfaces read this, not `people`. An empty team section is better
+ * than three striped rectangles and a row of "pending" chips — the gap belongs
+ * in the admin area, in front of whoever can fill it, not on the front page in
+ * front of a visitor.
+ */
+export const namedPeople = people.filter((person) => !person.placeholder);

@@ -1,5 +1,6 @@
 import { useLocale } from 'next-intl';
 import { Ltr } from '@/components/ui/Bidi';
+import { CodeLine } from '@/components/ui/Code';
 import type { ProofArtifact } from '@/content/proof';
 import { pick } from '@/content/types';
 import type { Locale } from '@/i18n/routing';
@@ -52,7 +53,7 @@ export function ReviewExcerpt({
             >
               <span className="diff-num">{line.sign === '+' ? line.lineNumber : line.lineNumber}</span>
               <span className="diff-sign">{line.sign.trim()}</span>
-              <span>{line.text}</span>
+              <span><CodeLine text={line.text} /></span>
             </div>
 
             {index + 1 === artifact.comment.anchorLine ? (

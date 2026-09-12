@@ -40,7 +40,7 @@ export const proof: ProofArtifact = {
     { sign: ' ', text: '}', lineNumber: 44 },
   ],
   comment: {
-    author: { ar: 'اسم المهندس قيد التحديد', en: 'Engineer name pending' },
+    author: { ar: 'المهندس المراجع', en: 'Reviewing engineer' },
     body: {
       ar: 'ثبّت topK في الإعدادات بدل تمريره من هنا، وأضف حالة اختبار تثبت أن التغيير لا يكسر الترتيب.',
       en: 'Pin topK in config rather than threading it through here, and add a case that proves the change does not alter ranking.',

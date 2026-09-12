@@ -8,7 +8,6 @@ import { PersonCard } from '@/components/PersonCard';
 import { Button } from '@/components/ui/Button';
 import { Kicker } from '@/components/ui/Kicker';
 import { CodeBlock, Num } from '@/components/ui/Bidi';
-import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
 import { Link } from '@/i18n/navigation';
 import type { Track } from '@/content/tracks';
 import { getTrackBySlug } from '@/lib/data/tracks';
@@ -98,10 +97,6 @@ function TrackDetail({ track }: { track: Track }) {
                 <h2>{t('track.outlineTitle')}</h2>
               </div>
 
-              {track.weeks.some((week) => week.placeholder) ? (
-                <PlaceholderNote>{t('placeholder.weeks')}</PlaceholderNote>
-              ) : null}
-
               <ol
                 className="flow-2"
                 style={{ listStyle: 'none', padding: 0, margin: 'var(--flow-4) 0 0' }}
@@ -153,7 +148,7 @@ function TrackDetail({ track }: { track: Track }) {
               </div>
               <p className="measure t-body text-secondary">{t('track.portfolioBody')}</p>
 
-              <div className="flow-3" style={{ marginBlockStart: 'var(--flow-4)', maxInlineSize: '460px' }}>
+              <div style={{ marginBlockStart: 'var(--flow-4)', maxInlineSize: '460px' }}>
                 <div className="panel">
                   <CodeBlock>{`rag-service/
 ├── src/
@@ -163,7 +158,6 @@ function TrackDetail({ track }: { track: Track }) {
 ├── .github/workflows/ci.yml
 └── README.md`}</CodeBlock>
                 </div>
-                <PlaceholderNote />
               </div>
             </section>
           </div>
@@ -189,7 +183,7 @@ function TrackDetail({ track }: { track: Track }) {
               <div className="flow-2">
                 <span className="t-fine text-muted">{t('track.priceTitle')}</span>
                 {track.priceMinor === undefined ? (
-                  <PlaceholderNote>{t('placeholder.price')}</PlaceholderNote>
+                  <span className="t-subsection text-secondary">{t('track.priceOnRequest')}</span>
                 ) : (
                   <span className="t-section">
                     <Num>{(track.priceMinor / 100).toLocaleString('en-US')}</Num>{' '}
@@ -210,12 +204,12 @@ function TrackDetail({ track }: { track: Track }) {
               {/* The CTA slot is real; the flow behind it is not. Enrollment
                   needs auth and a payment path, so the button says what it
                   will do and the marker says it does not do it yet. */}
-              <div className="flow-2">
-                <Button variant="primary" className="btn-block" disabled>
-                  {t('cta.startTrack')}
-                </Button>
-                <PlaceholderNote>{t('placeholder.enrollment')}</PlaceholderNote>
-              </div>
+              {/* Enrolment needs auth and a payment path, neither of which
+                  exists. The button states the intent and is inert rather than
+                  linking somewhere that cannot honour it. */}
+              <Button variant="primary" className="btn-block" disabled>
+                {t('cta.startTrack')}
+              </Button>
             </div>
 
             {instructor ? (

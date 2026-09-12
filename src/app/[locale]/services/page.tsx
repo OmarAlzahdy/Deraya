@@ -6,7 +6,6 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { Button } from '@/components/ui/Button';
 import { Kicker } from '@/components/ui/Kicker';
 import { Num } from '@/components/ui/Bidi';
-import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
 import type { Service } from '@/content/services';
 import { getPublishedServices } from '@/lib/data/services';
 import { pick } from '@/content/types';
@@ -95,7 +94,9 @@ function Services({ services }: { services: Service[] }) {
                         <span className="t-small text-muted">{service.priceBand.currency}</span>
                       </span>
                     ) : (
-                      <PlaceholderNote>{t('placeholder.price')}</PlaceholderNote>
+                      <span className="t-subsection text-secondary">
+                        {t('services.priceOnRequest')}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -105,12 +106,12 @@ function Services({ services }: { services: Service[] }) {
         </div>
 
         {/* One CTA for the page rather than four that cannot be honoured:
-            booking needs auth and a payment path, and neither exists yet. */}
+            booking needs auth and a payment path, and neither exists yet, so
+            the button states the intent and is inert. */}
         <div className="row row-4 section-tight">
           <Button variant="primary" className="btn-lg" disabled>
             {t('cta.bookReview')}
           </Button>
-          <PlaceholderNote>{t('placeholder.booking')}</PlaceholderNote>
         </div>
       </main>
 
