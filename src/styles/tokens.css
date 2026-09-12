@@ -79,30 +79,49 @@
   --font-heading-weight: 500; /* never bolder — hierarchy is size and space */
   --font-body-weight: 400;
 
-  /* Scale, from the brief. */
-  --text-display: 44px;
-  --text-page: clamp(28px, 4vw, 38px);
-  --text-section: 28px;
-  --text-card-title: 19px;
+  /* ── Type scale ────────────────────────────────────────────────────────
+     A modular scale with real contrast between levels — the earlier one ran
+     display 44 / section 28 / body 16 and read flat, because a hero and a
+     card title were nearly the same weight. Display and page headings scale
+     with the viewport; everything below them is fixed, because body text that
+     resizes with the window is harder to read, not easier. */
+  --text-display: clamp(40px, 6.2vw, 68px);
+  --text-page: clamp(30px, 3.6vw, 44px);
+  --text-section: clamp(22px, 2.2vw, 28px);
+  --text-subsection: 20px;
+  --text-card-title: 18px;
+  --text-lead: 19px;        /* the paragraph under a heading */
   --text-body: 16px;
   --text-small: 14.5px;
   --text-fine: 13px;
   --text-kicker: 11px;
 
   /* Line-height and tracking. Both are re-set for Arabic below: Arabic runs
-     taller and is never letter-spaced. */
-  --leading-display: 1.05;
-  --leading-heading: 1.15;
-  --leading-title: 1.25;
-  --leading-body: 1.65;
+     taller and is never letter-spaced. Display is tight because at 68px the
+     default leading opens a hole under the first line. */
+  --leading-display: 1.02;
+  --leading-page: 1.08;
+  --leading-heading: 1.18;
+  --leading-title: 1.3;
+  --leading-lead: 1.55;
+  --leading-body: 1.68;
   --leading-small: 1.6;
-  --tracking-display: -0.02em;
+  --tracking-display: -0.028em;
+  --tracking-page: -0.022em;
   --tracking-heading: -0.015em;
+  --tracking-title: -0.008em;
   --tracking-kicker: 0.16em;
 
-  /* ── Spacing — 0.70× density (base unit 4px × 0.7 = 2.8px) ───────────── */
-  /* Dense on purpose; do not inflate on mobile. The scale continues the same
-     N × 2.8px formula past the six steps the brief lists. */
+  /* ── Spacing ───────────────────────────────────────────────────────────
+     Two tiers, on purpose.
+
+     The dense 0.70x scale is right for surfaces people work in — tables, the
+     admin editors, the dashboard — and it stays exactly as the brief
+     specifies. It is wrong for surfaces people read: applied to a hero it
+     does not read as dense, it reads as cramped. So reading surfaces get the
+     `--flow-*` steps, and section rhythm gets its own tokens.
+
+     Density is a property of the surface, not of the product. */
   --space-1: 2.8px;
   --space-2: 5.6px;
   --space-3: 8.4px;
@@ -113,6 +132,19 @@
   --space-16: 44.8px;
   --space-24: 67.2px;
   --space-32: 89.6px;
+
+  /* Reading rhythm — the space between elements in a column of prose. */
+  --flow-1: 6px;
+  --flow-2: 10px;
+  --flow-3: 16px;
+  --flow-4: 24px;
+  --flow-5: 36px;
+  --flow-6: 52px;
+
+  /* Section rhythm — the space between the major blocks of a page. */
+  --section-gap: clamp(64px, 9vw, 128px);
+  --section-gap-tight: clamp(48px, 6vw, 80px);
+  --band-pad: clamp(44px, 5vw, 76px);
 
   /* ── Radius ───────────────────────────────────────────────────────────── */
   --radius-sm: 4px;
@@ -129,13 +161,22 @@
   --duration-base: 200ms;
   --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
 
-  /* ── Layout ───────────────────────────────────────────────────────────── */
-  --measure: 66ch;          /* reading width for body copy                   */
-  --measure-tight: 48ch;
-  --page-max: 1080px;
-  --page-gutter: var(--space-8);
-  --hit-target: 44px;       /* never smaller, at any breakpoint              */
-  --rule-fade: 48px;        /* rules fade to transparent over this distance  */
+  /* ── Layout ───────────────────────────────────────────────────────────
+     The page is a centred frame; the asymmetry lives inside it. Content holds
+     the leading columns and asides take the trailing ones, which is what the
+     brief's flush-left direction actually looks like at 1600px — the earlier
+     version pinned an 1080px column to the window edge and left a void, which
+     reads as broken rather than as composed. */
+  --page-max: 1240px;
+  --page-gutter: clamp(20px, 4vw, 56px);
+  --content-max: 860px;     /* the widest a single column of content runs   */
+  --rail: 300px;            /* the trailing aside: summary cards, filters   */
+  --measure: 68ch;          /* reading width for body copy                  */
+  --measure-tight: 44ch;    /* headlines and leads                          */
+  --measure-lead: 56ch;
+  --header-height: 64px;
+  --hit-target: 44px;       /* never smaller, at any breakpoint             */
+  --rule-fade: 48px;        /* rules fade to transparent over this distance */
 }
 
 /* ── Arabic ────────────────────────────────────────────────────────────────
@@ -146,13 +187,25 @@
   --font-heading: var(--font-arabic);
   --font-body: var(--font-arabic);
 
+  /* Arabic runs taller than the Latin equivalent at every level, and 1.5 is
+     the floor — including on display type, where the Latin scale goes to
+     1.02 and Arabic cannot follow it without colliding ascenders. */
   --leading-display: 1.5;
+  --leading-page: 1.5;
   --leading-heading: 1.5;
-  --leading-title: 1.5;
+  --leading-title: 1.55;
+  --leading-lead: 1.7;
   --leading-body: 1.85;
   --leading-small: 1.8;
 
   --tracking-display: 0;
+  --tracking-page: 0;
   --tracking-heading: 0;
+  --tracking-title: 0;
   --tracking-kicker: 0;
+
+  /* Arabic sets wider per character, so the same character count runs longer. */
+  --measure: 62ch;
+  --measure-tight: 38ch;
+  --measure-lead: 48ch;
 }

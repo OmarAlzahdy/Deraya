@@ -1,6 +1,5 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { SiteHeader } from '@/components/SiteHeader';
-import { Kicker } from '@/components/ui/Kicker';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { Button } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Tag';
 import { Ltr, Num } from '@/components/ui/Bidi';
@@ -22,26 +21,23 @@ export default async function AdminTracksPage({
   const tracks = await getAllTracks();
 
   return (
-    <>
-      <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>
-            <Link href="/admin" style={{ border: 0, color: 'inherit' }}>
-              {t('kicker')}
-            </Link>
-          </Kicker>
-          <h1>{t('courses')}</h1>
-          <div className="row">
-            <Button href="/admin/tracks/new" variant="primary">
-              {t('newCourse')}
-            </Button>
-          </div>
-        </header>
+    <AdminShell>
+      <div className="toolbar">
+        <h1>{t('courses')}</h1>
+        <Button href="/admin/tracks/new" variant="primary">
+          {t('newCourse')}
+        </Button>
+      </div>
 
-        {tracks.length === 0 ? (
-          <p className="panel-sunken measure t-small text-muted">{t('noCourses')}</p>
-        ) : (
+      {tracks.length === 0 ? (
+        <div className="empty-state">
+          <p style={{ margin: 0 }}>{t('noCourses')}</p>
+          <Button href="/admin/tracks/new" variant="secondary">
+            {t('newCourse')}
+          </Button>
+        </div>
+      ) : (
+        <div className="table-scroll">
           <table className="table">
             <thead>
               <tr>
@@ -60,7 +56,7 @@ export default async function AdminTracksPage({
                     </Link>
                   </td>
                   <td>
-                    <Ltr className="t-mono t-fine">{track.slug}</Ltr>
+                    <Ltr className="t-mono t-fine text-muted">{track.slug}</Ltr>
                   </td>
                   <td>
                     <Num>{track.week_count}</Num>
@@ -74,8 +70,8 @@ export default async function AdminTracksPage({
               ))}
             </tbody>
           </table>
-        )}
-      </main>
-    </>
+        </div>
+      )}
+    </AdminShell>
   );
 }

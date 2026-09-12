@@ -33,13 +33,19 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--font-heading-weight); /* never bolder */
   line-height: var(--leading-heading);
   letter-spacing: var(--tracking-heading);
-  text-wrap: pretty;
+  text-wrap: balance;
+  color: var(--color-text);
 }
 
-h1 { font-size: var(--text-page); }
+h1 {
+  font-size: var(--text-page);
+  line-height: var(--leading-page);
+  letter-spacing: var(--tracking-page);
+}
 h2 { font-size: var(--text-section); }
-h3 { font-size: var(--text-card-title); }
-h4 { font-size: var(--text-body); }
+h3 { font-size: var(--text-subsection); line-height: var(--leading-title); letter-spacing: var(--tracking-title); }
+h4 { font-size: var(--text-card-title); line-height: var(--leading-title); letter-spacing: var(--tracking-title); }
+h5 { font-size: var(--text-body); line-height: var(--leading-title); }
 
 p {
   margin: 0;
@@ -117,14 +123,16 @@ code, pre, kbd, samp {
   font-size: var(--text-display);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
+  text-wrap: balance;
 }
 
 .t-page {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
   font-size: var(--text-page);
-  line-height: var(--leading-heading);
-  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-page);
+  letter-spacing: var(--tracking-page);
+  text-wrap: balance;
 }
 
 .t-section {
@@ -135,18 +143,32 @@ code, pre, kbd, samp {
   letter-spacing: var(--tracking-heading);
 }
 
+.t-subsection {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  font-size: var(--text-subsection);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-title);
+}
+
 .t-title {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
   font-size: var(--text-card-title);
   line-height: var(--leading-title);
-  letter-spacing: 0;
+  letter-spacing: var(--tracking-title);
+}
+
+.t-lead {
+  font-size: var(--text-lead);
+  line-height: var(--leading-lead);
+  color: var(--color-text-secondary);
 }
 
 .t-body { font-size: var(--text-body); line-height: var(--leading-body); }
 .t-small { font-size: var(--text-small); line-height: var(--leading-small); }
 .t-fine { font-size: var(--text-fine); line-height: var(--leading-small); }
-.t-mono { font-family: var(--font-mono); }
+.t-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 .text-secondary { color: var(--color-text-secondary); }
 .text-muted { color: var(--color-text-muted); }

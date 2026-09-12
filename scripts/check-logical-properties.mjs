@@ -36,6 +36,13 @@ const JSX_RULES = [
   [/textAlign:\s*['"](?:left|right)['"]/, 'physical text-align in an inline style'],
 ];
 
+/** Replaces comment bodies with spaces, keeping every line number intact. */
+function stripComments(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, (match) => match.replace(/[^\n]/g, ' '))
+    .replace(/(^|[^:])\/\/[^\n]*/g, (match, prefix) => prefix + ' '.repeat(match.length - prefix.length));
+}
+
 async function* walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
@@ -51,11 +58,18 @@ for await (const file of walk(ROOT)) {
   const rules = ext === '.css' ? CSS_RULES : ext === '.tsx' || ext === '.ts' ? JSX_RULES : null;
   if (!rules) continue;
 
-  const lines = (await readFile(file, 'utf8')).split('\n');
+  const source = await readFile(file, 'utf8');
+  const lines = source.split('\n');
+  // Prose is not code: a comment reading "centring is right: ..." is not a
+  // physical offset. Comments are blanked before matching, but the rtl-ok
+  // opt-out is read from the original line, since it lives in a comment.
+  const code = stripComments(source).split('\n');
+
   lines.forEach((line, index) => {
     if (OPT_OUT.test(line)) return;
+    const subject = code[index] ?? line;
     for (const [pattern, reason] of rules) {
-      if (pattern.test(line)) {
+      if (pattern.test(subject)) {
         failures.push(`  ${file.replace(ROOT, 'src')}:${index + 1}  ${reason}\n      ${line.trim()}`);
         break;
       }

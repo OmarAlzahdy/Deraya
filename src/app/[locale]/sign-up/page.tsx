@@ -25,18 +25,20 @@ export default async function SignUpPage({ params }: { params: Promise<{ locale:
   return (
     <>
       <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>{t('kicker')}</Kicker>
-          <h1>{t('signUp')}</h1>
-          <p className="t-small text-secondary measure">{t('signUpBody')}</p>
-        </header>
+      <main id="main" className="auth-layout">
+        <div className="auth-card">
+          <header className="auth-head">
+            <Kicker>{t('kicker')}</Kicker>
+            <h1 className="t-page">{t('signUp')}</h1>
+            <p className="t-small text-secondary">{t('signUpBody')}</p>
+          </header>
 
-        <AuthForm mode="signUp" action={signUp} locale={locale} origin={origin} />
+          <AuthForm mode="signUp" action={signUp} locale={locale} origin={origin} />
 
-        <p className="t-small text-muted">
-          {t('haveAccount')} <Link href="/sign-in">{t('signIn')}</Link>
-        </p>
+          <p className="auth-foot">
+            {t('haveAccount')} <Link href="/sign-in">{t('signIn')}</Link>
+          </p>
+        </div>
       </main>
     </>
   );

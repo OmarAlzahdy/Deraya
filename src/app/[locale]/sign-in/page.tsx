@@ -20,7 +20,7 @@ export default async function SignInPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { locale } = await params;
-  const { next } = await searchParams;
+  const { next, error } = await searchParams;
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: 'auth' });
@@ -29,17 +29,25 @@ export default async function SignInPage({
   return (
     <>
       <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>{t('kicker')}</Kicker>
-          <h1>{t('signIn')}</h1>
-        </header>
+      <main id="main" className="auth-layout">
+        <div className="auth-card">
+          <header className="auth-head">
+            <Kicker>{t('kicker')}</Kicker>
+            <h1 className="t-page">{t('signIn')}</h1>
+          </header>
 
-        <AuthForm mode="signIn" action={signIn} locale={locale} next={next} origin={origin} />
+          {error === 'link' ? (
+            <p className="field-message field-message-error" role="alert">
+              {t('error.link')}
+            </p>
+          ) : null}
 
-        <p className="t-small text-muted">
-          {t('noAccount')} <Link href="/sign-up">{t('signUp')}</Link>
-        </p>
+          <AuthForm mode="signIn" action={signIn} locale={locale} next={next} origin={origin} />
+
+          <p className="auth-foot">
+            {t('noAccount')} <Link href="/sign-up">{t('signUp')}</Link>
+          </p>
+        </div>
       </main>
     </>
   );

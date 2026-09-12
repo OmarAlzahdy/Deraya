@@ -1,5 +1,5 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { SiteHeader } from '@/components/SiteHeader';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { Kicker } from '@/components/ui/Kicker';
 import { ServiceForm } from '@/components/admin/ServiceForm';
 import { Link } from '@/i18n/navigation';
@@ -15,20 +15,17 @@ export default async function NewServicePage({ params }: { params: Promise<{ loc
   const t = await getTranslations({ locale, namespace: 'admin' });
 
   return (
-    <>
-      <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>
-            <Link href="/admin/services" style={{ border: 0, color: 'inherit' }}>
-              {t('services')}
-            </Link>
-          </Kicker>
-          <h1>{t('newService')}</h1>
-        </header>
+    <AdminShell>
+      <header className="section-head">
+        <Kicker>
+          <Link href="/admin/services" style={{ border: 0, color: 'inherit' }}>
+            {t('services')}
+          </Link>
+        </Kicker>
+        <h1>{t('newService')}</h1>
+      </header>
 
         <ServiceForm action={saveService} />
-      </main>
-    </>
+    </AdminShell>
   );
 }

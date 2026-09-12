@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { useTranslations, useLocale } from 'next-intl';
-import { CheckCircle } from '@phosphor-icons/react/dist/ssr';
+import { CheckCircle, Circle } from '@phosphor-icons/react/dist/ssr';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { PersonCard } from '@/components/PersonCard';
@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/Button';
 import { Kicker } from '@/components/ui/Kicker';
 import { CodeBlock, Num } from '@/components/ui/Bidi';
 import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
+import { Link } from '@/i18n/navigation';
 import type { Track } from '@/content/tracks';
 import { getTrackBySlug } from '@/lib/data/tracks';
-import { getPerson } from '@/content/people';
+import { getPerson, people } from '@/content/people';
 import { pick } from '@/content/types';
 import type { Locale } from '@/i18n/routing';
 
@@ -47,166 +48,184 @@ export default async function TrackPage({
 /**
  * Screen 02 — Track detail. The brief calls it the heart of the product.
  *
- * Required and present: the week-by-week outline, what you will build, what
- * gets reviewed and by whom, prerequisites, the instructor, price, and what the
- * finished portfolio looks like. The two slots that cannot honestly be filled
- * yet — the week subjects (open decision 3) and the price (open decision 4) —
- * render as marked gaps rather than invented specifics.
+ * Two columns: the outline reads down the leading side while the facts a buyer
+ * needs — price, length, what gets reviewed, the instructor — stay in a sticky
+ * card on the trailing side. That is what the whitespace on the trailing edge
+ * is *for*, and it means the price is on screen at the moment the reader is
+ * deciding, wherever they are in a twelve-week outline.
  *
- * No wireframe exists for this screen; the layout is a proposal.
+ * The week list is a list, not a table: twelve rows of two columns read better
+ * as a sequence, and it collapses to one column on a phone without a scroller.
  */
 function TrackDetail({ track }: { track: Track }) {
   const t = useTranslations();
   const locale = useLocale() as Locale;
   const reviewedCount = track.weeks.filter((week) => week.reviewed).length;
-  const instructor = getPerson(track.instructorIds[0] ?? '');
+  // The brief requires the instructor on this page. No team is decided yet
+  // (open decision 5), so an unassigned track shows the marked placeholder
+  // rather than dropping the slot — the gap is the point.
+  const instructor = getPerson(track.instructorIds[0] ?? '') ?? people[0];
 
   return (
     <>
-      <a href="#main" className="sr-only">
+      <a href="#main" className="sr-only skip-link">
         {t('nav.skipToContent')}
       </a>
       <SiteHeader />
 
       <main id="main" className="page">
-        <header className="stack stack-6">
-          <Kicker>{t('track.kicker')}</Kicker>
-          <h1 className="measure-tight">{pick(track.title, locale)}</h1>
-          <p className="t-body text-secondary measure">{pick(track.summary, locale)}</p>
+        <div className="grid-editorial">
+          {/* ── The content column ───────────────────────────────────── */}
+          <div className="col-content">
+            <header className="flow-4">
+              <Kicker>
+                <Link href="/tracks" style={{ border: 0, color: 'inherit' }}>
+                  {t('tracks.title')}
+                </Link>
+              </Kicker>
+              <h1 className="measure-tight">{pick(track.title, locale)}</h1>
+              <p className="t-lead measure-lead">{pick(track.summary, locale)}</p>
+            </header>
 
-          <div className="row" style={{ gap: 'var(--space-6)' }}>
-            <span className="t-small text-muted">{t('home.weeks', { count: track.weekCount })}</span>
-            <span className="t-small text-muted">
-              {t('home.reviewedWeeks', { count: reviewedCount })}
-            </span>
-          </div>
+            <div className="panel flow-2" style={{ marginBlockStart: 'var(--flow-5)' }}>
+              <span className="t-fine text-muted">{t('track.outcomeTitle')}</span>
+              <p className="t-subsection">{pick(track.outcome, locale)}</p>
+            </div>
 
-          <div className="stack stack-2">
-            <span className="t-fine text-muted">{t('track.outcomeTitle')}</span>
-            <p className="t-title measure">{pick(track.outcome, locale)}</p>
-          </div>
+            {/* ── Week by week ───────────────────────────────────────── */}
+            <section className="section-tight">
+              <div className="section-divider">
+                <h2>{t('track.outlineTitle')}</h2>
+              </div>
 
-          {/* The CTA slot is real; the flow behind it is not. Enrollment needs
-              auth and a payment path, neither of which exists — so the button
-              says what it will do and the marker says it does not do it yet,
-              rather than linking somewhere that cannot honour it. */}
-          <div className="row">
-            <Button variant="primary" disabled>
-              {t('cta.startTrack')}
-            </Button>
-            <PlaceholderNote>{t('placeholder.enrollment')}</PlaceholderNote>
-          </div>
-        </header>
+              {track.weeks.some((week) => week.placeholder) ? (
+                <PlaceholderNote>{t('placeholder.weeks')}</PlaceholderNote>
+              ) : null}
 
-        {/* ── Week by week ─────────────────────────────────────────────── */}
-        <section className="section rule-top">
-          <div className="section-head">
-            <h2>{t('track.outlineTitle')}</h2>
-            {track.weeks.some((week) => week.placeholder) ? (
-              <PlaceholderNote>{t('placeholder.weeks')}</PlaceholderNote>
-            ) : null}
-          </div>
+              <ol
+                className="flow-2"
+                style={{ listStyle: 'none', padding: 0, margin: 'var(--flow-4) 0 0' }}
+              >
+                {track.weeks.map((week) => (
+                  <li
+                    key={week.weekNumber}
+                    className="list-row"
+                    style={{ gridTemplateColumns: 'auto minmax(0, 1fr) auto', paddingBlock: 'var(--space-6)' }}
+                  >
+                    <span className="t-mono t-fine text-muted" style={{ inlineSize: '3ch' }}>
+                      <Num>{String(week.weekNumber).padStart(2, '0')}</Num>
+                    </span>
 
-          <table className="table">
-            <thead>
-              <tr>
-                <th style={{ inlineSize: '6ch' }}>{t('track.weekColumn')}</th>
-                <th>{t('track.topicColumn')}</th>
-                <th>{t('track.outputColumn')}</th>
-                <th style={{ inlineSize: '12ch' }}>{t('track.reviewColumn')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {track.weeks.map((week) => (
-                <tr key={week.weekNumber}>
-                  <td>
-                    <Num>{String(week.weekNumber).padStart(2, '0')}</Num>
-                  </td>
-                  <td>{pick(week.title, locale)}</td>
-                  <td className="text-muted">
-                    {week.outline ? pick(week.outline, locale) : '—'}
-                  </td>
-                  <td>
+                    <div className="flow-1">
+                      <span className="t-small">{pick(week.title, locale)}</span>
+                      {week.outline ? (
+                        <span className="t-fine text-muted">{pick(week.outline, locale)}</span>
+                      ) : null}
+                    </div>
+
                     {week.reviewed ? (
-                      <span className="status status-success">
+                      <span className="status status-success t-fine">
                         <CheckCircle size={15} aria-hidden />
                         <span>{t('track.reviewedBadge')}</span>
                       </span>
                     ) : (
-                      <span className="text-muted">—</span>
+                      <span className="status status-neutral t-fine" aria-hidden>
+                        <Circle size={15} />
+                      </span>
                     )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+                  </li>
+                ))}
+              </ol>
+            </section>
 
-        {/* ── What gets reviewed ───────────────────────────────────────── */}
-        <section className="section rule-top">
-          <div className="section-head">
-            <h2>{t('track.reviewTitle')}</h2>
-            <p className="measure text-secondary t-small">{t('track.reviewBody')}</p>
-          </div>
-
-          <div className="grid grid-wide">
-            <div className="stack stack-3">
-              <span className="t-fine text-muted">{t('track.instructorTitle')}</span>
-              {instructor ? (
-                <div style={{ maxInlineSize: '240px' }}>
-                  <PersonCard person={instructor} photoCaption={t('placeholder.person')} />
-                </div>
-              ) : null}
-            </div>
-
-            <div className="stack stack-6">
-              <div className="stack stack-2">
-                <span className="t-fine text-muted">{t('track.prerequisitesTitle')}</span>
-                <p className="t-small">
-                  {track.prerequisites
-                    ? pick(track.prerequisites, locale)
-                    : t('track.prerequisitesBody')}
-                </p>
+            {/* ── What gets reviewed ─────────────────────────────────── */}
+            <section className="section-tight">
+              <div className="section-divider">
+                <h2>{t('track.reviewTitle')}</h2>
               </div>
+              <p className="measure t-body text-secondary">{t('track.reviewBody')}</p>
+            </section>
 
-              <div className="stack stack-2">
-                <span className="t-fine text-muted">{t('track.priceTitle')}</span>
-                {/* Open decision 4. A made-up number on a page a buyer reads is
-                    worse than a visible gap. */}
-                {track.priceMinor === undefined ? (
-                  <PlaceholderNote>{t('placeholder.price')}</PlaceholderNote>
-                ) : (
-                  <span className="t-title">
-                    <Num>{(track.priceMinor / 100).toLocaleString('en-US')}</Num> {track.currency}
-                  </span>
-                )}
+            {/* ── The finished portfolio ─────────────────────────────── */}
+            <section className="section-tight">
+              <div className="section-divider">
+                <h2>{t('track.portfolioTitle')}</h2>
               </div>
-            </div>
-          </div>
-        </section>
+              <p className="measure t-body text-secondary">{t('track.portfolioBody')}</p>
 
-        {/* ── The finished portfolio ───────────────────────────────────── */}
-        <section className="section rule-top">
-          <div className="section-head">
-            <h2>{t('track.portfolioTitle')}</h2>
-            <p className="measure text-secondary t-small">{t('track.portfolioBody')}</p>
-          </div>
-
-          {/* The preview is the product's own material: a repository tree.
-              Generic scaffolding until a real finished portfolio exists. */}
-          <div className="stack stack-3" style={{ maxInlineSize: '440px' }}>
-            <div className="panel-sunken">
-              <CodeBlock>{`rag-service/
+              <div className="flow-3" style={{ marginBlockStart: 'var(--flow-4)', maxInlineSize: '460px' }}>
+                <div className="panel">
+                  <CodeBlock>{`rag-service/
 ├── src/
 │   ├── retrieval/
 │   └── eval/
 ├── tests/
 ├── .github/workflows/ci.yml
 └── README.md`}</CodeBlock>
-            </div>
-            <PlaceholderNote />
+                </div>
+                <PlaceholderNote />
+              </div>
+            </section>
           </div>
-        </section>
+
+          {/* ── The facts, pinned ────────────────────────────────────── */}
+          <aside className="col-rail col-rail-sticky">
+            <div className="card flow-4">
+              <div className="stat-row" style={{ gap: 'var(--space-8)' }}>
+                <div className="stat">
+                  <span className="stat-value">
+                    <Num>{track.weekCount}</Num>
+                  </span>
+                  <span className="stat-label">{t('tracks.weeksLabel')}</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">
+                    <Num>{reviewedCount}</Num>
+                  </span>
+                  <span className="stat-label">{t('tracks.reviewedWeeks')}</span>
+                </div>
+              </div>
+
+              <div className="flow-2">
+                <span className="t-fine text-muted">{t('track.priceTitle')}</span>
+                {track.priceMinor === undefined ? (
+                  <PlaceholderNote>{t('placeholder.price')}</PlaceholderNote>
+                ) : (
+                  <span className="t-section">
+                    <Num>{(track.priceMinor / 100).toLocaleString('en-US')}</Num>{' '}
+                    <span className="t-small text-muted">{track.currency}</span>
+                  </span>
+                )}
+              </div>
+
+              <div className="flow-2">
+                <span className="t-fine text-muted">{t('track.prerequisitesTitle')}</span>
+                <span className="t-small text-secondary">
+                  {track.prerequisites
+                    ? pick(track.prerequisites, locale)
+                    : t('track.prerequisitesBody')}
+                </span>
+              </div>
+
+              {/* The CTA slot is real; the flow behind it is not. Enrollment
+                  needs auth and a payment path, so the button says what it
+                  will do and the marker says it does not do it yet. */}
+              <div className="flow-2">
+                <Button variant="primary" className="btn-block" disabled>
+                  {t('cta.startTrack')}
+                </Button>
+                <PlaceholderNote>{t('placeholder.enrollment')}</PlaceholderNote>
+              </div>
+            </div>
+
+            {instructor ? (
+              <div className="flow-3" style={{ marginBlockStart: 'var(--space-12)' }}>
+                <span className="t-fine text-muted">{t('track.instructorTitle')}</span>
+                <PersonCard person={instructor} photoCaption={t('placeholder.person')} compact />
+              </div>
+            ) : null}
+          </aside>
+        </div>
       </main>
 
       <SiteFooter />

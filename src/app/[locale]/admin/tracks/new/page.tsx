@@ -1,5 +1,5 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { SiteHeader } from '@/components/SiteHeader';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { Kicker } from '@/components/ui/Kicker';
 import { TrackForm } from '@/components/admin/TrackForm';
 import { Link } from '@/i18n/navigation';
@@ -15,21 +15,18 @@ export default async function NewTrackPage({ params }: { params: Promise<{ local
   const t = await getTranslations({ locale, namespace: 'admin' });
 
   return (
-    <>
-      <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>
-            <Link href="/admin/tracks" style={{ border: 0, color: 'inherit' }}>
-              {t('courses')}
-            </Link>
-          </Kicker>
-          <h1>{t('newCourse')}</h1>
-          <p className="t-small text-secondary measure">{t('newCourseBody')}</p>
-        </header>
+    <AdminShell>
+      <header className="section-head">
+        <Kicker>
+          <Link href="/admin/tracks" style={{ border: 0, color: 'inherit' }}>
+            {t('courses')}
+          </Link>
+        </Kicker>
+        <h1>{t('newCourse')}</h1>
+        <p className="lead">{t('newCourseBody')}</p>
+      </header>
 
         <TrackForm action={saveTrack} />
-      </main>
-    </>
+    </AdminShell>
   );
 }

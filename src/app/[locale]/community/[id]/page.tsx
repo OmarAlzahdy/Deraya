@@ -4,8 +4,8 @@ import { CheckCircle } from '@phosphor-icons/react/dist/ssr';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Kicker } from '@/components/ui/Kicker';
-import { Tag } from '@/components/ui/Tag';
 import { Button } from '@/components/ui/Button';
+import { Avatar } from '@/components/ui/Avatar';
 import { RichText } from '@/components/community/RichText';
 import { EngineerBadge } from '@/components/community/EngineerBadge';
 import { AnswerForm } from '@/components/community/AnswerForm';
@@ -25,10 +25,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 /**
  * A thread.
  *
- * Mixed direction in one page is the normal case here, not an edge case: the
- * question may be Arabic and an answer English, with code in both. Each body
- * carries its own `lang`/`dir`, and fenced code inside any of them renders as
- * an LTR island (see RichText).
+ * Mixed direction is the normal case here, not an edge case: the question may
+ * be Arabic and an answer English, with code in both. Each body carries its
+ * own `lang`/`dir`, and fenced code inside any of them renders as an LTR
+ * island (see RichText).
+ *
+ * Answers are a threaded list with the author on a leading rail, not a stack
+ * of cards — a card per answer makes a conversation read as a set of unrelated
+ * objects. The accepted answer leads and is marked on its leading edge.
  */
 export default async function ThreadPage({
   params,
@@ -43,105 +47,145 @@ export default async function ThreadPage({
 
   const t = await getTranslations({ locale, namespace: 'community' });
   const isAuthor = profile?.id === question.author_id;
+  const questionDir = question.locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
     <>
+      <a href="#main" className="sr-only skip-link">
+        {t('skipToContent')}
+      </a>
       <SiteHeader />
-      <main className="page">
-        <header className="stack stack-4">
-          <Kicker>
-            <Link href="/community" style={{ border: 0, color: 'inherit' }}>
-              {t('kicker')}
-            </Link>
-          </Kicker>
 
-          <h1 lang={question.locale} dir={question.locale === 'ar' ? 'rtl' : 'ltr'}>
-            {question.title}
-          </h1>
+      <main id="main" className="page">
+        <div className="grid-editorial">
+          <div className="col-content-wide">
+            <header className="flow-4">
+              <Kicker>
+                <Link href="/community" style={{ border: 0, color: 'inherit' }}>
+                  {t('kicker')}
+                </Link>
+              </Kicker>
 
-          <div className="row" style={{ gap: 'var(--space-4)' }}>
-            <span className="t-fine text-muted">
-              {question.author?.display_name ?? t('deletedAuthor')}
-            </span>
-            <span className="t-fine text-muted">
-              {formatDate(new Date(question.created_at), locale as Locale)}
-            </span>
-          </div>
+              <h1 className="measure-tight">
+                <bdi lang={question.locale} dir={questionDir}>
+                  {question.title}
+                </bdi>
+              </h1>
 
-          {question.tags.length > 0 ? (
-            <div className="row">
-              {question.tags.map((tag) => (
-                <Tag key={tag.slug} tone="neutral">
-                  {locale === 'ar' ? tag.label_ar : tag.label_en}
-                </Tag>
-              ))}
-            </div>
-          ) : null}
-        </header>
-
-        <section
-          className="section"
-          lang={question.locale}
-          dir={question.locale === 'ar' ? 'rtl' : 'ltr'}
-        >
-          <RichText body={question.body} />
-        </section>
-
-        <section className="section rule-top stack stack-8">
-          <h2 className="t-section">
-            {t('answers', { count: question.answers.length })}
-          </h2>
-
-          {question.answers.map((answer) => (
-            <article
-              key={answer.id}
-              className="card elev-sm"
-              style={
-                answer.accepted_at
-                  ? { borderInlineStart: '2px solid var(--color-accent)' }
-                  : undefined
-              }
-            >
-              <div className="row" style={{ gap: 'var(--space-4)' }}>
-                <span className="t-small">{answer.author?.display_name ?? t('deletedAuthor')}</span>
-                {answeredByEngineer(answer) ? <EngineerBadge /> : null}
-                {answer.accepted_at ? (
-                  <span className="status status-success">
-                    <CheckCircle size={15} aria-hidden />
-                    <span>{t('accepted')}</span>
+              <div className="row row-4">
+                <span className="row" style={{ gap: 'var(--space-3)' }}>
+                  <Avatar
+                    name={question.author?.display_name ?? '?'}
+                    staff={question.author?.role !== 'member'}
+                  />
+                  <span className="t-small">
+                    {question.author?.display_name ?? t('deletedAuthor')}
                   </span>
-                ) : null}
-                <span className="t-fine text-muted">
-                  {formatDate(new Date(answer.created_at), locale as Locale)}
                 </span>
+                <span className="t-fine text-muted">
+                  {formatDate(new Date(question.created_at), locale as Locale)}
+                </span>
+                {question.tags.map((tag) => (
+                  <Link
+                    key={tag.slug}
+                    href={{ pathname: '/community', query: { tag: tag.slug } }}
+                    className="tag tag-neutral"
+                  >
+                    {locale === 'ar' ? tag.label_ar : tag.label_en}
+                  </Link>
+                ))}
+              </div>
+            </header>
+
+            <div
+              className="t-body"
+              lang={question.locale}
+              dir={questionDir}
+              style={{ marginBlockStart: 'var(--flow-5)' }}
+            >
+              <RichText body={question.body} />
+            </div>
+
+            {/* ── Answers ────────────────────────────────────────────── */}
+            <section className="section-tight">
+              <div className="section-divider">
+                <h2 className="t-section">{t('answers', { count: question.answers.length })}</h2>
               </div>
 
-              <div style={{ marginBlockStart: 'var(--space-3)' }}>
-                <RichText body={answer.body} />
-              </div>
+              <div>
+                {question.answers.map((answer) => (
+                  <article
+                    key={answer.id}
+                    className={['thread-item', answer.accepted_at ? 'thread-accepted' : null]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    <Avatar
+                      name={answer.author?.display_name ?? '?'}
+                      size="lg"
+                      staff={answeredByEngineer(answer)}
+                    />
 
-              {isAuthor && !answer.accepted_at ? (
-                <form action={acceptAnswer} style={{ marginBlockStart: 'var(--space-3)' }}>
-                  <input type="hidden" name="answerId" value={answer.id} />
-                  <input type="hidden" name="questionId" value={question.id} />
-                  <input type="hidden" name="locale" value={locale} />
-                  <Button type="submit" variant="ghost">
-                    {t('accept')}
+                    <div className="flow-3">
+                      <div className="row row-4">
+                        <span className="t-small">
+                          {answer.author?.display_name ?? t('deletedAuthor')}
+                        </span>
+                        {answeredByEngineer(answer) ? <EngineerBadge /> : null}
+                        {answer.accepted_at ? (
+                          <span className="status status-success t-fine">
+                            <CheckCircle size={15} weight="fill" aria-hidden />
+                            <span>{t('accepted')}</span>
+                          </span>
+                        ) : null}
+                        <span className="t-fine text-muted">
+                          {formatDate(new Date(answer.created_at), locale as Locale)}
+                        </span>
+                      </div>
+
+                      {/* An answer carries no stored language — a thread mixes
+                          them freely. `dir="auto"` reads the first strong
+                          character, so an English answer in an Arabic thread
+                          sets left-to-right and keeps its full stop at the end. */}
+                      <div className="t-body" dir="auto">
+                        <RichText body={answer.body} />
+                      </div>
+
+                      {isAuthor && !answer.accepted_at ? (
+                        <form action={acceptAnswer}>
+                          <input type="hidden" name="answerId" value={answer.id} />
+                          <input type="hidden" name="questionId" value={question.id} />
+                          <input type="hidden" name="locale" value={locale} />
+                          <Button type="submit" variant="ghost" className="btn-sm">
+                            {t('accept')}
+                          </Button>
+                        </form>
+                      ) : null}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            {/* ── Reply ─────────────────────────────────────────────── */}
+            <section className="section-tight">
+              {profile ? (
+                <div className="panel">
+                  <AnswerForm action={postAnswer} questionId={question.id} locale={locale} />
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <p style={{ margin: 0 }}>{t('signInToAnswer')}</p>
+                  <Button href="/sign-in" variant="primary">
+                    {t('signIn')}
                   </Button>
-                </form>
-              ) : null}
-            </article>
-          ))}
-
-          {profile ? (
-            <AnswerForm action={postAnswer} questionId={question.id} locale={locale} />
-          ) : (
-            <p className="panel-sunken t-small text-muted measure">
-              {t('signInToAnswer')} <Link href="/sign-in">{t('signIn')}</Link>
-            </p>
-          )}
-        </section>
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
       </main>
+
       <SiteFooter />
     </>
   );

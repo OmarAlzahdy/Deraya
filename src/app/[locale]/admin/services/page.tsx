@@ -1,6 +1,5 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { SiteHeader } from '@/components/SiteHeader';
-import { Kicker } from '@/components/ui/Kicker';
+import { AdminShell } from '@/components/admin/AdminShell';
 import { Button } from '@/components/ui/Button';
 import { Tag } from '@/components/ui/Tag';
 import { Ltr } from '@/components/ui/Bidi';
@@ -22,26 +21,23 @@ export default async function AdminServicesPage({
   const services = await getAllServices();
 
   return (
-    <>
-      <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>
-            <Link href="/admin" style={{ border: 0, color: 'inherit' }}>
-              {t('kicker')}
-            </Link>
-          </Kicker>
-          <h1>{t('services')}</h1>
-          <div className="row">
-            <Button href="/admin/services/new" variant="primary">
-              {t('newService')}
-            </Button>
-          </div>
-        </header>
+    <AdminShell>
+      <div className="toolbar">
+        <h1>{t('services')}</h1>
+        <Button href="/admin/services/new" variant="primary">
+          {t('newService')}
+        </Button>
+      </div>
 
-        {services.length === 0 ? (
-          <p className="panel-sunken measure t-small text-muted">{t('noServices')}</p>
-        ) : (
+      {services.length === 0 ? (
+        <div className="empty-state">
+          <p style={{ margin: 0 }}>{t('noServices')}</p>
+          <Button href="/admin/services/new" variant="secondary">
+            {t('newService')}
+          </Button>
+        </div>
+      ) : (
+        <div className="table-scroll">
           <table className="table">
             <thead>
               <tr>
@@ -59,7 +55,7 @@ export default async function AdminServicesPage({
                     </Link>
                   </td>
                   <td>
-                    <Ltr className="t-mono t-fine">{service.slug}</Ltr>
+                    <Ltr className="t-mono t-fine text-muted">{service.slug}</Ltr>
                   </td>
                   <td>
                     <Tag tone={service.status === 'published' ? 'accent' : 'neutral'}>
@@ -70,8 +66,8 @@ export default async function AdminServicesPage({
               ))}
             </tbody>
           </table>
-        )}
-      </main>
-    </>
+        </div>
+      )}
+    </AdminShell>
   );
 }

@@ -16,7 +16,9 @@ export function AccountForm({ profile, action }: { profile: Profile; action: Act
   const [state, formAction, pending] = useActionState(action, {});
 
   return (
-    <form action={formAction} className="stack stack-6" style={{ maxInlineSize: '520px' }}>
+    <form action={formAction} className="flow-6">
+      <fieldset className="fieldset">
+        <legend>{t('identity')}</legend>
       <Field label={t('displayName')}>
         {({ id }) => (
           <Input id={id} name="displayName" defaultValue={profile.display_name} required />
@@ -26,8 +28,11 @@ export function AccountForm({ profile, action }: { profile: Profile; action: Act
       <Field label={t('handle')} hint={t('handleHint')}>
         {({ id }) => <Input id={id} name="handle" defaultValue={profile.handle} ltr required />}
       </Field>
+      </fieldset>
 
-      <div className="grid">
+      <fieldset className="fieldset">
+        <legend>{t('publicProfile')}</legend>
+      <div className="grid-pair">
         <Field label={t('headlineAr')}>
           {({ id }) => (
             <Input id={id} name="headlineAr" defaultValue={profile.headline_ar ?? ''} lang="ar" />
@@ -57,9 +62,12 @@ export function AccountForm({ profile, action }: { profile: Profile; action: Act
           />
         )}
       </Field>
+      </fieldset>
 
-      <div className="stack stack-3">
-        <span className="t-fine text-muted">{t('preferredLocale')}</span>
+      <fieldset className="fieldset">
+        <legend>{t('preferences')}</legend>
+        <div className="flow-3">
+        <span className="field-label">{t('preferredLocale')}</span>
         <Seg label={t('preferredLocale')}>
           <SegOption name="preferredLocale" value="ar" defaultChecked={profile.locale === 'ar'}>
             <span lang="ar" dir="rtl" className="lang-run">
@@ -72,7 +80,8 @@ export function AccountForm({ profile, action }: { profile: Profile; action: Act
             </span>
           </SegOption>
         </Seg>
-      </div>
+        </div>
+      </fieldset>
 
       {state.error ? (
         <p className="field-message field-message-error" role="alert">
@@ -85,9 +94,11 @@ export function AccountForm({ profile, action }: { profile: Profile; action: Act
         </p>
       ) : null}
 
-      <Button type="submit" variant="primary" disabled={pending}>
-        {pending ? t('saving') : t('save')}
-      </Button>
+      <div className="row row-4">
+        <Button type="submit" variant="primary" disabled={pending}>
+          {pending ? t('saving') : t('save')}
+        </Button>
+      </div>
     </form>
   );
 }

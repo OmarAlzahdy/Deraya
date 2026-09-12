@@ -62,7 +62,7 @@ function Foundations() {
             <p className="measure text-secondary t-small">{t('foundations.color.body')}</p>
           </div>
 
-          <div className="grid">
+          <div className="grid-cards">
             <RoleSwatch token="--color-bg" value="#111c1d" />
             <RoleSwatch token="--color-surface" value="#1d2a2c" />
             <RoleSwatch token="--color-surface-sunken" value="#172324" />
@@ -110,7 +110,7 @@ function Foundations() {
             </div>
 
             {/* Both scripts side by side: the pairing has to hold on one page. */}
-            <div className="grid">
+            <div className="grid-cards">
               <div className="stack stack-2">
                 <Kicker code>ar · IBM Plex Sans Arabic</Kicker>
                 <LangRun lang="ar" className="t-title" style={{ display: 'block' }}>
@@ -136,7 +136,7 @@ function Foundations() {
             <p className="measure text-secondary t-small">{t('foundations.direction.body')}</p>
           </div>
 
-          <div className="grid grid-wide">
+          <div className="grid-2">
             <Card title={t('foundations.direction.mirrorLabel')}>
               <div className="row" style={{ gap: 'var(--space-6)', color: 'var(--color-accent)' }}>
                 <ArrowRight size={22} className="mirror-rtl" aria-hidden />
@@ -206,7 +206,7 @@ function Foundations() {
 
             <div className="stack stack-3">
               <Kicker>{t('foundations.components.cards')}</Kicker>
-              <div className="grid">
+              <div className="grid-cards">
                 <Card kicker={t('principles.proof.title')} title={t('hero.supporting.one')}>
                   {t('principles.proof.body')}
                 </Card>
@@ -281,7 +281,7 @@ function Foundations() {
 
             <div className="stack stack-3">
               <Kicker>{t('foundations.components.imagery')}</Kicker>
-              <div className="grid">
+              <div className="grid-cards">
                 <PlaceholderMedia caption={t('foundations.placeholder.photo')} />
                 <PlaceholderMedia caption={t('foundations.placeholder.logo')} ratio="3 / 2" />
               </div>
@@ -314,7 +314,7 @@ function Foundations() {
             ))}
           </div>
 
-          <div className="grid" style={{ marginBlockStart: 'var(--space-12)' }}>
+          <div className="grid-cards" style={{ marginBlockStart: 'var(--space-12)' }}>
             {(['sm', 'md', 'lg'] as const).map((level) => (
               <div key={level} className={`card elev-${level}`}>
                 <Ltr className="t-mono t-fine text-muted">--shadow-{level}</Ltr>

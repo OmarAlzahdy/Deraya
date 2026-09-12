@@ -15,11 +15,21 @@ import type { Locale } from '@/i18n/routing';
  * This is the component screen 08 (review thread) grows out of, so the shape
  * is the real one: hunks, signs, line numbers, an anchor.
  */
-export function ReviewExcerpt({ artifact }: { artifact: ProofArtifact }) {
+export function ReviewExcerpt({
+  artifact,
+  compact = false,
+}: {
+  artifact: ProofArtifact;
+  /** The hero rail shows the head and the comment, not the whole hunk. */
+  compact?: boolean;
+}) {
   const locale = useLocale() as Locale;
+  const lines = compact
+    ? artifact.lines.slice(0, artifact.comment.anchorLine)
+    : artifact.lines;
 
   return (
-    <div className="diff">
+    <div className={['diff', compact ? 'diff-compact' : null].filter(Boolean).join(' ')}>
       <div className="diff-head">
         <Ltr>{artifact.repo}</Ltr>
         <span aria-hidden>·</span>
@@ -29,7 +39,7 @@ export function ReviewExcerpt({ artifact }: { artifact: ProofArtifact }) {
       </div>
 
       <div className="diff-body">
-        {artifact.lines.map((line, index) => (
+        {lines.map((line, index) => (
           <div key={`${line.lineNumber}-${index}`}>
             <div
               className={[

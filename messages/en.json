@@ -15,7 +15,10 @@
     "tracks": "Tracks",
     "account": "Account",
     "admin": "Admin",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "home": "Home",
+    "primary": "Primary",
+    "signUp": "Create account"
   },
   "language": {
     "label": "Language",
@@ -151,7 +154,12 @@
     "teamBody": "Every instructor is someone who also does the consulting work.",
     "weeks": "{count, plural, one {# week} other {# weeks}}",
     "reviewedWeeks": "{count, plural, one {# reviewed submission} other {# reviewed submissions}}",
-    "noTracks": "No tracks published yet. An administrator adds them from the admin area."
+    "noTracks": "No tracks published yet. An administrator adds them from the admin area.",
+    "heroNote": "Taught in Arabic. Code in English.",
+    "engineLearn": "Engine one",
+    "engineBuild": "Engine two",
+    "seeAllTracks": "All tracks",
+    "proofNote": "A real thread, on a real repository."
   },
   "track": {
     "kicker": "Track",
@@ -226,7 +234,13 @@
       "name": "Enter your name.",
       "signedOut": "You are signed out.",
       "failed": "That did not save. Try again."
-    }
+    },
+    "skipToContent": "Skip to content",
+    "intro": "Your name and handle are public — the profile is the artifact members share.",
+    "preview": "How you appear",
+    "identity": "Identity",
+    "publicProfile": "Public profile",
+    "preferences": "Preferences"
   },
   "community": {
     "kicker": "Community",
@@ -256,7 +270,9 @@
       "body": "Add some detail — at least 20 characters.",
       "signedOut": "Sign in first.",
       "failed": "That did not post. Try again."
-    }
+    },
+    "skipToContent": "Skip to content",
+    "answersLabel": "Answers"
   },
   "admin": {
     "kicker": "Admin",
@@ -324,6 +340,32 @@
       "band": "The top of the band cannot be below the bottom.",
       "forbidden": "That needs an administrator account.",
       "failed": "That did not save. Try again."
-    }
+    },
+    "skipToContent": "Skip to content",
+    "overview": "Overview",
+    "content": "Content",
+    "bilingual": "Both languages",
+    "bilingualHint": "A row publishes in both languages or not at all.",
+    "pricing": "Pricing and order",
+    "publishing": "Publishing",
+    "publishedOfTotal": "published of total"
+  },
+  "footer": {
+    "more": "More"
+  },
+  "tracks": {
+    "kicker": "Learn",
+    "title": "Career tracks",
+    "intro": "Every track ends with something that runs, and every reviewed week is read line by line by an engineer.",
+    "empty": "No tracks are published yet.",
+    "weekly": "Week by week",
+    "reviewedWeeks": "Reviewed weeks",
+    "startsAt": "Price",
+    "weeksLabel": "Weeks"
+  },
+  "common": {
+    "back": "Back",
+    "published": "Published",
+    "draft": "Draft"
   }
 }

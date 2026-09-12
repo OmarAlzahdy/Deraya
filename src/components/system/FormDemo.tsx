@@ -21,7 +21,7 @@ export function FormDemo() {
 
   return (
     <div className="stack stack-6">
-      <div className="grid" style={{ alignItems: 'start' }}>
+      <div className="grid-pair" style={{ alignItems: 'start' }}>
         <Field label={t('form.emailLabel')} error={email.error}>
           {({ id, describedBy, invalid }) => (
             <Input

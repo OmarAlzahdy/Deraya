@@ -1,44 +1,127 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Layout utilities — asymmetric and flush to the leading edge.
+   Layout — a centred frame with the asymmetry inside it.
 
-   Content hugs the leading edge (left in English, right in Arabic) and
-   whitespace sits on the trailing side. Columns are never centered. All of it
-   is written in logical properties, so the same rules produce the mirrored
-   layout under dir="rtl" with no second stylesheet.
+   The brief asks for asymmetric, flush-to-the-leading-edge composition with
+   whitespace on the trailing side. The literal reading — pin a fixed column to
+   the window edge — leaves a void at 1600px and reads as a broken page rather
+   than a composed one. What it actually describes is an editorial grid: the
+   content holds the leading columns, and the trailing columns carry asides,
+   metadata, or nothing at all. That is what this file builds.
+
+   Every rule is in logical properties, so the same grid mirrors under
+   dir="rtl" with no second stylesheet.
    ═════════════════════════════════════════════════════════════════════════ */
 
-/* The page shell. Flush to the leading edge with the trailing side left open —
-   not `margin-inline: auto`. `.shell` constrains the measure; `.page` is the
-   shell plus the vertical rhythm of a whole page. A full-bleed band sits
-   outside the shell and puts one inside itself. */
+/* ── The frame ─────────────────────────────────────────────────────────── */
 .shell {
+  inline-size: 100%;
   max-inline-size: var(--page-max);
-  margin-inline: 0;
+  margin-inline: auto;
   padding-inline: var(--page-gutter);
 }
 
+/* A whole page of sections. */
 .page {
+  inline-size: 100%;
   max-inline-size: var(--page-max);
-  margin-inline: 0;
+  margin-inline: auto;
   padding-inline: var(--page-gutter);
-  padding-block: var(--space-16) var(--space-32);
+  padding-block: var(--section-gap-tight) var(--section-gap);
 }
 
-/* A section, separated by space rather than a rule wherever possible. */
+/* ── Editorial grid ────────────────────────────────────────────────────────
+   Twelve columns at desktop width. `.col-content` takes the leading eight,
+   `.col-rail` the trailing four — so the whitespace on the trailing side is
+   structural, and an aside can move into it without the layout changing.   */
+.grid-editorial {
+  display: grid;
+  /* minmax(0, 1fr), not 1fr: a grid track's default minimum is its content
+     size, so one wide child — a diff, a long path — pushes the whole column
+     past the viewport instead of scrolling inside itself. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--flow-6) var(--space-24);
+  align-items: start;
+}
+
+.col-content,
+.col-content-wide,
+.col-rail {
+  min-inline-size: 0;
+}
+
+@media (min-width: 960px) {
+  .grid-editorial {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .col-content {
+    grid-column: 1 / span 7;
+  }
+  .col-content-wide {
+    /* 8 + 4 = 12. At span 9 it overlapped the rail's first column, and the
+       grid pushed the rail onto a second row. */
+    grid-column: 1 / span 8;
+  }
+  .col-rail {
+    grid-column: 9 / span 4;
+  }
+  .col-rail-sticky {
+    position: sticky;
+    inset-block-start: calc(var(--header-height) + var(--space-8));
+  }
+}
+
+/* ── Sections ──────────────────────────────────────────────────────────── */
 .section {
-  margin-block-start: var(--space-24);
+  margin-block-start: var(--section-gap);
 }
 
+.section-tight {
+  margin-block-start: var(--section-gap-tight);
+}
+
+/* A section head: kicker, heading, lead. The lead is deliberately narrower
+   than the measure — a line of introduction should be shorter than the body
+   it introduces. */
 .section-head {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  margin-block-end: var(--space-8);
+  gap: var(--flow-3);
+  margin-block-end: var(--flow-6);
+  max-inline-size: var(--measure-lead);
 }
 
-/* Stacks and rows. `gap` is direction-agnostic; `row` wraps and reverses
-   automatically because flex follows the inline direction. */
-.stack { display: flex; flex-direction: column; }
+.section-head .lead {
+  font-size: var(--text-lead);
+  line-height: var(--leading-lead);
+  color: var(--color-text-secondary);
+}
+
+/* A heading with a rule that runs from the heading to the trailing edge —
+   the divider is what makes a section boundary read without a full rule. */
+.section-divider {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-6);
+  margin-block-end: var(--flow-5);
+}
+
+.section-divider::after {
+  content: '';
+  block-size: 1px;
+  background: linear-gradient(to right, var(--color-divider), transparent);
+}
+
+[dir='rtl'] .section-divider::after {
+  background: linear-gradient(to left, var(--color-divider), transparent);
+}
+
+/* ── Stacks and rows ───────────────────────────────────────────────────────
+   `gap` follows the inline direction, so these need no mirroring.          */
+.stack {
+  display: flex;
+  flex-direction: column;
+}
 .stack-1 { gap: var(--space-1); }
 .stack-2 { gap: var(--space-2); }
 .stack-3 { gap: var(--space-3); }
@@ -47,33 +130,74 @@
 .stack-8 { gap: var(--space-8); }
 .stack-12 { gap: var(--space-12); }
 
+/* Reading rhythm, for a column of prose and its headings. */
+.flow-2 { display: flex; flex-direction: column; gap: var(--flow-2); }
+.flow-3 { display: flex; flex-direction: column; gap: var(--flow-3); }
+.flow-4 { display: flex; flex-direction: column; gap: var(--flow-4); }
+.flow-5 { display: flex; flex-direction: column; gap: var(--flow-5); }
+.flow-6 { display: flex; flex-direction: column; gap: var(--flow-6); }
+
 .row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-3);
 }
+.row-4 { gap: var(--space-4); }
+.row-6 { gap: var(--space-6); }
 .row-baseline { align-items: baseline; }
 .row-start { justify-content: flex-start; }
+.row-between { justify-content: space-between; }
 .row-end { justify-content: flex-end; }
 
-/* Auto-fitting card grids. */
-.grid {
-  display: grid;
-  gap: var(--space-6);
-  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+/* A row of actions under a block of content. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--flow-4);
 }
-.grid-wide {
+
+/* ── Card grids ────────────────────────────────────────────────────────── */
+/* auto-fill, not auto-fit: with auto-fit a single card stretches across the
+   whole frame and stops looking like a card. Empty tracks stay empty, which
+   also leaves the trailing whitespace the brand direction asks for. */
+.grid-cards {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+}
+
+.grid-2 {
+  display: grid;
+  gap: var(--space-8);
   grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
 }
 
-/* Mobile-first: cards stack below this width and the dense scale holds. */
+/* Two fields side by side — the bilingual pair that runs through every editor. */
+.grid-pair {
+  display: grid;
+  gap: var(--space-4) var(--space-6);
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+}
+
+/* ── Measures ──────────────────────────────────────────────────────────── */
+.measure { max-inline-size: var(--measure); }
+.measure-lead { max-inline-size: var(--measure-lead); }
+.measure-tight { max-inline-size: var(--measure-tight); }
+
+/* ── Mobile ────────────────────────────────────────────────────────────────
+   Mobile-first in behaviour: cards stack, the rail follows the content, and
+   the dense scale holds — the reading rhythm shortens, the UI density does
+   not inflate.                                                             */
 @media (max-width: 640px) {
   :root {
-    --page-gutter: var(--space-6);
+    --flow-5: 28px;
+    --flow-6: 40px;
   }
-  .grid,
-  .grid-wide {
+
+  .grid-cards,
+  .grid-2 {
     grid-template-columns: 1fr;
   }
 }

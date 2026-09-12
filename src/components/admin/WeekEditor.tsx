@@ -40,7 +40,7 @@ export function WeekEditor({
         </Checkbox>
       </div>
 
-      <div className="grid" style={{ marginBlockStart: 'var(--space-3)' }}>
+      <div className="grid-pair" style={{ marginBlockStart: 'var(--space-3)' }}>
         <Field label={t('titleAr')}>
           {({ id }) => <Input id={id} name="titleAr" lang="ar" defaultValue={week.title_ar} required />}
         </Field>
@@ -51,7 +51,7 @@ export function WeekEditor({
         </Field>
       </div>
 
-      <div className="grid" style={{ marginBlockStart: 'var(--space-3)' }}>
+      <div className="grid-pair" style={{ marginBlockStart: 'var(--space-3)' }}>
         <Field label={t('outputAr')}>
           {({ id }) => <Input id={id} name="outlineAr" lang="ar" defaultValue={week.outline_ar ?? ''} />}
         </Field>

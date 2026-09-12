@@ -110,6 +110,26 @@ Two things RLS alone could not police, now enforced by triggers:
   community layer rests on. It is stamped from the author's real role at write
   time and frozen, so a later promotion does not rewrite history.
 
+## Layout and density
+
+Two decisions carry most of the look:
+
+**A centred frame, asymmetric inside it.** The brief asks for flush-to-the-
+leading-edge composition with whitespace trailing. Taken literally — a fixed
+column pinned to the window edge — that leaves a void at 1600px and reads as a
+broken page. What it describes is an editorial grid: twelve columns, content in
+the leading seven or eight, and the trailing four carrying an aside. So the
+track page's price and length sit in a sticky rail beside the outline, the
+community's tag filter sits beside the thread list, and the home page's proof
+artifact sits beside the claim it backs. The whitespace is structural rather
+than left over.
+
+**Density is a property of the surface.** The 0.70× scale the brief specifies
+is right for surfaces people work in — tables, the admin editors — and wrong
+for surfaces people read, where it reads as cramped rather than dense. Reading
+pages use the `--flow-*` steps and `--section-gap`; working surfaces keep
+`--space-*`. Both are in `tokens.css`.
+
 ## The RTL contract
 
 This is the constraint the handoff calls the biggest, so it is enforced rather

@@ -3,6 +3,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { Kicker } from '@/components/ui/Kicker';
 import { AskForm } from '@/components/community/AskForm';
+import { Link } from '@/i18n/navigation';
 import { listTags } from '@/lib/data/community';
 import { requireProfile } from '@/lib/auth';
 import type { Locale } from '@/i18n/routing';
@@ -25,14 +26,22 @@ export default async function AskPage({ params }: { params: Promise<{ locale: st
   return (
     <>
       <SiteHeader />
-      <main className="page stack stack-8">
-        <header className="stack stack-4">
-          <Kicker>{t('kicker')}</Kicker>
-          <h1>{t('ask')}</h1>
-          <p className="t-small text-secondary measure">{t('askBody')}</p>
-        </header>
+      <main id="main" className="page">
+        <div className="grid-editorial">
+          <div className="col-content-wide flow-6">
+            <header className="section-head" style={{ marginBlockEnd: 0 }}>
+              <Kicker>
+                <Link href="/community" style={{ border: 0, color: 'inherit' }}>
+                  {t('kicker')}
+                </Link>
+              </Kicker>
+              <h1>{t('ask')}</h1>
+              <p className="lead">{t('askBody')}</p>
+            </header>
 
-        <AskForm action={askQuestion} tags={tags} />
+            <AskForm action={askQuestion} tags={tags} />
+          </div>
+        </div>
       </main>
       <SiteFooter />
     </>
