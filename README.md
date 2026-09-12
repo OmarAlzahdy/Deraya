@@ -3,19 +3,21 @@
 An AI school and an engineering practice, in one place — from zero to
 production, in Arabic and English.
 
-**What is built:** the design token layer, the bilingual AR/EN routing and RTL
-contract, the component layer, the database schema with its access model, and
-screens 01–03 (Home, Track detail, Services).
+**What is built:** a working platform. Accounts (sign-up, sign-in, sessions,
+profiles), a community layer with threaded questions and an engineer badge that
+cannot be faked, an admin area where courses and services are created, edited
+and published, and the public pages that read them — Home, Track detail,
+Services — in Arabic and English.
 
-**What those screens are:** layout proposals. No wireframe exists for any of
-the eight surfaces, so these were built from the brief's required-elements
-lists and are meant to be reviewed running, in both languages, and changed.
+**What it runs on:** Postgres via Supabase, with row-level security on every
+table and three database triggers covering the things RLS cannot police. The
+schema, its policies and its triggers are tested; the whole platform is
+verified end to end through a browser (`test/local-stack`).
 
-**What is deliberately missing:** every content specific the brief has not
-decided. Track subjects, prices and the team render as visible markers naming
-the decision that fills them — see [Open decisions](#open-decisions). Nothing
-is invented to make a page look finished, and no engineer is named who does not
-exist.
+**What is still open:** a Supabase project to point it at, and the content the
+brief never decided — the launch track list, prices and the team. Content gaps
+render as visible markers naming the decision that fills them, rather than
+invented specifics. See [Open decisions](#open-decisions).
 
 ## Stack
 
@@ -28,9 +30,28 @@ map onto rather than reinvent.
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000 → redirects to /ar or /en
-npm run check    # typecheck + lint + the RTL guard
+cp .env.example .env.local   # fill in from your Supabase project
+npm run dev                  # http://localhost:3000 → /ar or /en
+npm run check                # typecheck + lint + the RTL guard
 npm run build
+```
+
+Without `.env.local` the site still runs: the marketing pages fall back to
+placeholder content. Accounts, community and admin need the database.
+
+Connecting a project:
+
+```bash
+npx supabase login
+npx supabase link --project-ref <ref>
+npx supabase db push          # applies supabase/migrations/
+```
+
+Then make yourself the first administrator — nobody can self-promote, so this
+one is SQL, once, from the Supabase SQL editor:
+
+```sql
+update public.profiles set role = 'admin' where handle = 'your-handle';
 ```
 
 ## Where things are
@@ -38,22 +59,56 @@ npm run build
 | Path | What it is |
 | --- | --- |
 | `src/styles/tokens.css` | The Signal palette, type scale, spacing, radii, elevation. The source of truth — never hard-code a value this file carries |
-| `src/styles/tokens.status.proposal.css` | Proposed error/warning/success colors, **pending approval** (open decision 2) |
-| `src/styles/base.css` | Element defaults and the type scale as classes |
+| `src/styles/tokens.status.css` | Error and warning colors. Success has no hue by design — see open decision 2 |
 | `src/styles/rtl.css` | Mirroring, direction islands, bilingual kickers, language runs |
-| `src/styles/layout.css` | Flush-to-the-leading-edge page shell, stacks, grids |
 | `src/styles/components.css` | The Nocturne class layer, re-tinted to Signal and rewritten in logical properties |
-| `src/components/ui/` | The React component layer over those classes |
+| `src/components/ui/` | The component layer over those classes |
 | `src/i18n/` | Locale routing, request config, number and date formatting |
-| `src/proxy.ts` | Locale negotiation: cookie → Accept-Language → default |
-| `messages/{ar,en}.json` | Copy. Approved brand copy is used verbatim |
-| `src/content/` | Content for the built screens, shaped like the database rows. Everything undecided is marked `placeholder` with the decision that fills it |
-| `supabase/` | Schema, RLS policies and the test that exercises them — see `supabase/README.md` |
+| `src/proxy.ts` | Locale negotiation and Supabase session refresh, in that order |
+| `src/lib/auth.ts` | Who is asking: `getProfile`, `requireProfile`, `requireAdmin` |
 | `src/lib/supabase/` | Typed client for browser and server, session refresh, introspected database types |
-| `/ar`, `/en` | Screen 01 — Home |
-| `/ar/tracks/[slug]` | Screen 02 — Track detail |
-| `/ar/services` | Screen 03 — Services and code review |
-| `/ar/system`, `/en/system` | The foundations reference page — tokens, type, direction and components in both languages. Not one of the eight screens |
+| `src/lib/data/` | Queries behind the pages, with a pre-provisioning fallback |
+| `supabase/` | Schema, RLS policies, triggers, and the tests that exercise them |
+| `test/local-stack/` | Running and verifying the platform without Docker |
+| `messages/{ar,en}.json` | Copy. Approved brand copy is used verbatim |
+
+## Screens
+
+| Route | Screen |
+| --- | --- |
+| `/ar`, `/en` | 01 Home |
+| `/[locale]/tracks/[slug]` | 02 Track detail |
+| `/[locale]/services` | 03 Services and code review |
+| `/[locale]/community` | 06 Community — threads, tags, engineer badge |
+| `/[locale]/community/[id]` | A thread: answers, accepting one, mixed direction |
+| `/[locale]/admin` | Courses and services: create, edit, publish, delete |
+| `/[locale]/account` | The member's own profile |
+| `/[locale]/sign-in`, `/sign-up` | Accounts |
+| `/[locale]/system` | The foundations reference — not one of the eight screens |
+
+Screens 04 (assessment), 05 (public profile), 07 (dashboard) and 08 (review
+thread) are not built. The schema carries all four, and screen 08's hardest
+part already exists as `src/components/ReviewExcerpt.tsx`.
+
+## Access model
+
+Three layers, and each one assumes the others may fail:
+
+1. **The route** checks the role. A member who is not an admin gets a 404 on
+   `/admin`, not a "forbidden" — the routes do not advertise themselves.
+2. **Every server action** re-checks the role before it writes.
+3. **Row-level security** would refuse the write regardless. It is on for every
+   table and denies by default, with read policies written for the logged-out
+   case first, because the public pages and community threads work without a
+   session.
+
+Two things RLS alone could not police, now enforced by triggers:
+
+- A member could set their own `role` to `admin`, since the self-update policy
+  covers every column on their row. Role changes now require an admin.
+- A client could post `authored_as: 'engineer'` and claim the badge the whole
+  community layer rests on. It is stamped from the author's real role at write
+  time and frozen, so a later promotion does not rewrite history.
 
 ## The RTL contract
 
@@ -95,6 +150,11 @@ than documented:
   not from the Google CDN.
 - In the review excerpt, the diff is an LTR island while the engineer's comment
   inside it follows the page: Arabic comment, English code, one block.
+- 24 end-to-end checks pass through a browser against real Postgres and real
+  PostgREST: sign-in, admin gating, creating a course and publishing it,
+  editing a week, the course reaching both public pages, asking a question in
+  Arabic with code that stays LTR, the engineer badge's integrity rules, and a
+  signed-out visitor's view. `test/local-stack/e2e.mjs`.
 - The schema applies to Postgres 16 and its policies were exercised — anonymous
   visitors see published tracks and public profiles but no submissions and no
   unshared results; a member sees their own work and not another's; an assigned
@@ -125,17 +185,14 @@ than documented:
 | 4 | Prices | **Open.** Track price, review price, consulting day rate. Price slots are built and visibly empty — a wrong number on a buyer's page is a commercial claim |
 | 5 | Team | **Open.** Names, roles and photographs for 4–10 people. Nothing is invented here on purpose: a fabricated engineer on a page whose claim is "taught by practitioners" is the one lie the brand cannot afford |
 | 6 | Screen wireframes | **Resolved by proposal.** 01–03 are built as layout proposals to review running rather than as wireframes. 04–08 are not started |
-| 7 | Backend | **Resolved — Supabase.** Schema, RLS and client are in the repository and tested. No project is provisioned and nothing has been applied to a remote database |
+| 7 | Backend | **Resolved — Supabase.** Schema, RLS, triggers and client are in the repository and tested end to end. **No project is provisioned**: the organisation is at the free tier's two-project cap, so `deraya` could not be created. Freeing a slot is the last step before this runs live |
 
 ### What it takes to go further
 
-- **Provision Supabase.** No Deraya project exists in the account. Once one is
-  created, `supabase link` and `supabase db push` apply the migration, and
-  `.env.example` names the two variables the app needs.
-- **Screens 04–08** (assessment, public profile, community, dashboard, review
-  thread) all need the backend live and a decision on auth. The review thread
-  already has its component: `src/components/ReviewExcerpt.tsx` is the diff and
-  the line-anchored comment, built to grow into screen 08.
+- **Provision Supabase.** The organisation currently holds four projects and
+  the free tier allows two per member, so creating `deraya` is refused. Delete,
+  pause or upgrade one, then `supabase link` and `supabase db push`.
+- **Screens 04, 05, 07 and 08** (assessment, public profile, dashboard, review
+  thread) are not built. The schema carries all four.
 - **Booking and enrollment flows** do not exist. Their CTAs are visible and
   marked pending rather than linking somewhere that cannot honour them.
-
