@@ -46,7 +46,7 @@ export function PersonCard({
   return (
     <article className="flow-3">
       {person.avatarUrl ? (
-        <figure className="lighten">
+        <figure className="blend-photo">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={person.avatarUrl} alt={person.displayName} />
         </figure>

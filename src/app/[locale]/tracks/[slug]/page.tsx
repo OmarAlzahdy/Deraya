@@ -11,7 +11,7 @@ import { CodeBlock, Num } from '@/components/ui/Bidi';
 import { Link } from '@/i18n/navigation';
 import type { Track } from '@/content/tracks';
 import { getTrackBySlug } from '@/lib/data/tracks';
-import { getPerson, people } from '@/content/people';
+import { namedPeople } from '@/content/people';
 import { pick } from '@/content/types';
 import type { Locale } from '@/i18n/routing';
 
@@ -60,10 +60,11 @@ function TrackDetail({ track }: { track: Track }) {
   const t = useTranslations();
   const locale = useLocale() as Locale;
   const reviewedCount = track.weeks.filter((week) => week.reviewed).length;
-  // The brief requires the instructor on this page. No team is decided yet
-  // (open decision 5), so an unassigned track shows the marked placeholder
-  // rather than dropping the slot — the gap is the point.
-  const instructor = getPerson(track.instructorIds[0] ?? '') ?? people[0];
+  // The brief requires the instructor here, but an unnamed placeholder is
+  // scaffolding on a public page — same rule as the home page's team section.
+  // The slot appears when a real person is assigned; until then the admin area
+  // is where the gap is visible.
+  const instructor = namedPeople.find((person) => person.id === track.instructorIds[0]);
 
   return (
     <>

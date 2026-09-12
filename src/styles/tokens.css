@@ -12,59 +12,66 @@
    ═════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* ── Ground and roles ─────────────────────────────────────────────────── */
-  --color-bg: #111c1d;              /* deep petrol ground                    */
-  --color-surface: #1d2a2c;         /* cards, raised panels                  */
-  --color-surface-sunken: #172324;  /* inset / quieter panels                */
-  --color-text: #e7eeef;            /* 14.8:1 on ground                      */
-  --color-accent: #50b29d;          /* 6.79:1 on ground — may carry body text */
-  --color-divider: color-mix(in srgb, #e7eeef 16%, transparent);
+  /* ── Ground and roles ─────────────────────────────────────────────────
+     Paper: deep teal on warm white. The ramps are generated in OKLCH on the
+     same shared lightness scale the system has always used — accent hue 176,
+     neutrals hue 150 — so step N of one ramp still matches step N of the
+     other in visual weight. Every ratio noted here is measured, not
+     estimated. */
+  --color-bg: #faf8f5;              /* warm white, never pure                */
+  --color-surface: #ffffff;         /* cards, raised panels                  */
+  --color-surface-sunken: #f2efe9;  /* inset / quieter panels                */
+  --color-text: #16211f;            /* 15.58:1 on ground                     */
+  --color-accent: #006453;          /* 6.72:1 on ground, 7.12:1 on surface   */
+  --color-divider: color-mix(in srgb, #16211f 12%, transparent);
 
-  /* Full-bleed band only — at most one per page. Never an interface fill. */
-  --color-section: #063c32;
-  --color-section-glow: #0c5d4f;
-  --color-section-ghost: #1d806e;
+  /* Full-bleed band only — at most one per page. On a light page this is the
+     one dark field, so it carries its own text colour. */
+  --color-section: #0d4f43;
+  --color-section-glow: #12695a;
+  --color-section-text: #eaf6f1;
 
   /* ── Tonal ramps ──────────────────────────────────────────────────────── */
-  /* Accent — teal, hue 177. This is a mono palette: there is no second accent. */
-  --color-accent-100: #e5f6f1;
-  --color-accent-200: #c8eee4;
-  --color-accent-300: #9eddcd;
-  --color-accent-400: #6dc4b0;
-  --color-accent-500: #3ca691;
-  --color-accent-600: #1d806e;
-  --color-accent-700: #0c5d4f;
-  --color-accent-800: #063c32;
-  --color-accent-900: #06201a;
+  /* Accent — teal, hue 176. Mono palette: there is no second accent. */
+  --color-accent-100: #d3fff2;
+  --color-accent-200: #b3f5e3;
+  --color-accent-300: #8de3cd;
+  --color-accent-400: #66cab2;
+  --color-accent-500: #3eab93;
+  --color-accent-600: #118772;
+  --color-accent-700: #006453;
+  --color-accent-800: #004235;
+  --color-accent-900: #00221b;
 
-  /* Neutral — hue 205. */
-  --color-neutral-100: #ebf4f5;
-  --color-neutral-200: #dce7e8;
-  --color-neutral-300: #c4d1d2;
-  --color-neutral-400: #a6b4b6;
-  --color-neutral-500: #879597;
-  --color-neutral-600: #657173;
-  --color-neutral-700: #475253;
-  --color-neutral-800: #2c3536;
-  --color-neutral-900: #151c1d;
+  /* Neutral — hue 150, a green bias so the greys belong to the accent. */
+  --color-neutral-100: #eef6f0;
+  --color-neutral-200: #e0e8e1;
+  --color-neutral-300: #cad2cc;
+  --color-neutral-400: #b0b7b1;
+  --color-neutral-500: #919892;
+  --color-neutral-600: #707771;
+  --color-neutral-700: #505751;
+  --color-neutral-800: #333934;
+  --color-neutral-900: #181d19;
 
-  /* ── Text roles, by measured contrast on the ground ───────────────────── */
-  /* Readable copy only from these. neutral-600 is 3.45:1 — never body text.  */
-  --color-text-secondary: var(--color-neutral-300); /* 10.4:1 — long reading  */
-  --color-text-muted: var(--color-neutral-500);     /*  5.61:1 on bg, 4.77 on surface */
-  --color-text-accent: var(--color-accent);         /*  6.79:1                */
-  --color-rule: var(--color-neutral-600);           /*  3.45:1 — rules, borders, never copy */
+  /* ── Text roles, by measured contrast on the ground ───────────────────
+     On a light ground the readable steps are the DARK end of the ramp — the
+     inverse of the dark palette, where they were the light end. */
+  --color-text-secondary: #3d4b48;  /* 8.62:1 — long reading                 */
+  --color-text-muted: #65736f;      /* 4.68:1 — the floor for body-size text */
+  --color-text-accent: var(--color-accent);
+  --color-rule: var(--color-neutral-300); /* rules and borders, never copy    */
 
-  /* ── Interaction tints ────────────────────────────────────────────────── */
-  /* Hover is an accent tint; pressed is one step past the base (accent-400
-     on this dark ground), or a heavier tint for outlined and ghost variants. */
-  --tint-accent-hover: color-mix(in srgb, var(--color-accent) 12%, transparent);
-  --tint-accent-press: color-mix(in srgb, var(--color-accent) 22%, transparent);
-  --tint-neutral-hover: color-mix(in srgb, var(--color-text) 7%, transparent);
-  --tint-neutral-press: color-mix(in srgb, var(--color-text) 14%, transparent);
-  --color-pressed: var(--color-accent-400);
+  /* ── Interaction tints ────────────────────────────────────────────────
+     Hover is an accent wash. Pressed goes one step DARKER than the base on
+     this ground, where the dark palette went one step lighter. */
+  --tint-accent-hover: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  --tint-accent-press: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  --tint-neutral-hover: color-mix(in srgb, var(--color-text) 5%, transparent);
+  --tint-neutral-press: color-mix(in srgb, var(--color-text) 9%, transparent);
+  --color-pressed: var(--color-accent-800);
   --opacity-disabled: 0.45;
 
   /* ── Typography ───────────────────────────────────────────────────────── */
@@ -151,10 +158,20 @@
   --radius-md: 8px; /* the default */
   --radius-lg: 14px;
 
-  /* ── Elevation — an edge plus ambient darkness, never stacked shadows ─── */
-  --shadow-sm: 0 0 0 1px #2c3536;
-  --shadow-md: 0 0 0 1px #475253, 0 6px 18px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 0 0 1px #879597, 0 16px 40px rgba(0, 0, 0, 0.65);
+  /* ── Elevation ────────────────────────────────────────────────────────
+     On a dark ground elevation was an edge plus ambient darkness. On a light
+     one darkness reads as dirt, so it becomes a hairline plus a soft ink-
+     tinted shadow, mixed from the text colour rather than from black — a
+     neutral-grey shadow on a warm ground looks like a smudge. */
+  --shadow-sm: 0 0 0 1px color-mix(in srgb, #16211f 9%, transparent);
+  --shadow-md:
+    0 0 0 1px color-mix(in srgb, #16211f 8%, transparent),
+    0 1px 2px color-mix(in srgb, #16211f 5%, transparent),
+    0 6px 16px color-mix(in srgb, #16211f 7%, transparent);
+  --shadow-lg:
+    0 0 0 1px color-mix(in srgb, #16211f 8%, transparent),
+    0 2px 6px color-mix(in srgb, #16211f 6%, transparent),
+    0 18px 40px color-mix(in srgb, #16211f 12%, transparent);
 
   /* ── Motion — restrained. Opacity and small translations only. ────────── */
   --duration-fast: 150ms;

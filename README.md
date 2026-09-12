@@ -200,7 +200,8 @@ than documented:
 
 | # | Decision | State |
 | --- | --- | --- |
-| 2 | Status colors | **Resolved.** Only failure states get a hue — danger `#ef8a7c`, warning `#e0a458`. Success is an accent check mark and a word, because a green close enough to read as success is close enough to read as a second accent. `src/styles/tokens.status.css` |
+| 1 | Palette | **Re-opened and re-resolved — Paper.** Deep teal `#006453` on warm white `#faf8f5`. Five directions were generated in OKLCH and compared as the same slice of the real interface; Paper was chosen. The study is at `docs/palette-study.md` |
+| 2 | Status colors | **Resolved.** Only failure states get a hue — danger `#a8321f`, warning `#8a5a09`, both retuned for the light ground. Success is an accent check mark and a word, because a green close enough to read as success is close enough to read as a second accent. `src/styles/tokens.status.css` |
 | 3 | Track list | **Open.** Which three launch, how long, what each ends with. Track pages render the structure with subjects marked pending |
 | 4 | Prices | **Open.** Track price, review price, consulting day rate. Price slots are built and visibly empty — a wrong number on a buyer's page is a commercial claim |
 | 5 | Team | **Open.** Names, roles and photographs for 4–10 people. Nothing is invented here on purpose: a fabricated engineer on a page whose claim is "taught by practitioners" is the one lie the brand cannot afford |

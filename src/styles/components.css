@@ -343,12 +343,12 @@
 :lang(ar) .tag { letter-spacing: 0; }
 
 .tag-accent {
-  background: color-mix(in srgb, var(--color-accent-800) 70%, transparent);
-  border-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
-  color: var(--color-accent-200);
+  background: color-mix(in srgb, var(--color-accent-100) 75%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent) 24%, transparent);
+  color: var(--color-accent-700);
 }
 .tag-neutral {
-  background: color-mix(in srgb, var(--color-neutral-800) 55%, transparent);
+  background: color-mix(in srgb, var(--color-neutral-200) 65%, transparent);
   border-color: var(--color-divider);
   color: var(--color-text-secondary);
 }
@@ -378,8 +378,10 @@
    the title's ::after, so the hit area is the card and the accessible name
    is still the title. */
 .card-interactive:hover {
-  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent-900));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 32%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 94%, var(--color-accent-100));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 28%, transparent),
+    0 2px 10px color-mix(in srgb, #16211f 7%, transparent);
 }
 
 .card-link {
@@ -791,7 +793,7 @@ textarea.input {
   color: var(--color-text);
   box-shadow: var(--shadow-lg);
 }
-.dialog::backdrop { background: color-mix(in srgb, #000 66%, transparent); }
+.dialog::backdrop { background: color-mix(in srgb, #16211f 42%, transparent); }
 
 .dialog-title {
   font-family: var(--font-heading);
@@ -814,10 +816,15 @@ textarea.input {
 }
 
 /* ── Imagery ──────────────────────────────────────────────────────────────
-   Every content photograph goes through .lighten: dark values fall away into
-   the page. No photography exists yet, so slots render as marked placeholders. */
-.lighten {
-  mix-blend-mode: lighten;
+   Every content photograph goes through .blend-photo, which blends it into the
+   page ground so the backdrop falls away. The blend mode is a property of the
+   ground: `lighten` drops dark values into a dark page, `multiply` drops light
+   values into a light one. On Paper it is multiply, so photographs want a
+   white or very light backdrop — the opposite of the dark-ground brief, and
+   worth saying out loud to whoever commissions the shoot.
+   No photography exists yet, so slots render as marked placeholders. */
+.blend-photo {
+  mix-blend-mode: multiply;
   background-color: transparent;
 }
 
@@ -865,7 +872,7 @@ textarea.input {
 /* ── Loading ──────────────────────────────────────────────────────────────
    Skeletons built from --color-surface on --color-bg, not spinners.         */
 .skeleton {
-  background: var(--color-surface);
+  background: var(--color-surface-sunken);
   border-radius: var(--radius-sm);
   position: relative;
   overflow: hidden;
@@ -909,6 +916,7 @@ textarea.input {
     radial-gradient(120% 160% at 50% 0%, var(--color-section-glow), transparent 62%),
     var(--color-section);
   padding-block: var(--band-pad);
+  color: var(--color-section-text);
 }
 
 .band-inner {
@@ -1011,7 +1019,7 @@ textarea.input {
 }
 
 .diff-num {
-  color: var(--color-rule);
+  color: var(--color-neutral-500);
   font-variant-numeric: tabular-nums;
   text-align: right; /* rtl-ok: line numbers align to the code, which is LTR */
   user-select: none;
@@ -1298,7 +1306,7 @@ textarea.input {
   pointer-events: none;
   background: radial-gradient(
     60% 50% at 30% 30%,
-    color-mix(in srgb, var(--color-accent) 14%, transparent),
+    color-mix(in srgb, var(--color-accent) 7%, transparent),
     transparent 70%
   );
 }
@@ -1407,8 +1415,8 @@ textarea.input {
    Syntax colour inside the mono palette: accent shades and neutrals only, so
    a diff still reads as part of the same system. Keywords carry the accent,
    strings a lighter neutral, punctuation recedes.                           */
-.tok-keyword { color: var(--color-accent-300); }
-.tok-string { color: var(--color-neutral-300); }
-.tok-number { color: var(--color-accent-200); }
+.tok-keyword { color: var(--color-accent-700); }
+.tok-string { color: var(--color-neutral-700); }
+.tok-number { color: var(--color-accent-800); }
 .tok-punct { color: var(--color-neutral-500); }
-.tok-comment { color: var(--color-neutral-600); font-style: italic; }
+.tok-comment { color: var(--color-neutral-500); font-style: italic; }

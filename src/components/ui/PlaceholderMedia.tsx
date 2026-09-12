@@ -2,8 +2,12 @@
  * No photography exists yet (handoff: *Assets*). Every image slot in the
  * product renders this striped block with a monospace caption until real
  * photographs arrive — and it says so, in the interface, rather than shipping
- * a stock image. Photographs replacing these are shot on dark or black
- * backgrounds and go through the .lighten wrapper.
+ * a stock image.
+ *
+ * Photographs replacing these go through the .blend-photo wrapper. Note the
+ * brief's instruction to shoot on dark backgrounds was written for the dark
+ * palette; on Paper the blend is multiply, so the shoot wants white or very
+ * light backdrops instead.
  */
 export function PlaceholderMedia({
   caption,

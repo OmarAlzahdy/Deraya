@@ -46,6 +46,13 @@
   white-space: pre;
   overflow-x: auto;
   tab-size: 2;
+  /* A fenced block needs a surface to read as code rather than as mono prose —
+     on a light ground especially, where bare monospace looks like a typo. */
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--color-divider);
+  padding: var(--space-4) var(--space-6);
+  margin: 0;
 }
 
 /* Numbers. Latin digits in both locales — see the locale note in

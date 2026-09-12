@@ -1,42 +1,29 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Status colors — open decision 2, resolved.
+   Status colours — open decision 2, resolved, retuned for the Paper ground.
 
-   The constraint: the brand accent is a teal-green, which collides with the
-   conventional "success" green. A success color close enough to the accent to
-   read as green is close enough to read as a second accent, and the palette is
-   mono by design — one accent voice.
+   The rule stands: only failure states get a hue. Danger and warning are
+   colours; success is an accent check mark and a word. A success green close
+   enough to read as green is close enough to read as a second accent, and the
+   palette is mono by design.
 
-   The resolution: **only failure states get a hue.** Danger and warning are
-   colors; success is an accent mark and a word. A green check beside a teal
-   interface buys nothing a check mark does not already say, and it costs the
-   palette its single voice.
+   The values moved with the ground. On a dark ground danger and warning were
+   light tints (#ef8a7c, #e0a458); on warm white they have to be dark enough to
+   read as text, so they are deep clay and ochre instead.
 
-   That also matches where the product actually uses these: a review that
-   passed, a submission accepted, an assessment completed — all of them carry
-   text and a mark anyway. What genuinely needs color is the thing the reader
-   must not miss: a failed check, a blocked submission, an expired session.
-
-   Contrast, measured on the ground #111c1d / on --color-surface #1d2a2c:
-     --color-danger  #ef8a7c   7.12:1 / 6.05:1
-     --color-warning #e0a458   7.97:1 / 6.78:1
+   Contrast, measured on the ground #faf8f5 / on --color-surface #ffffff:
+     --color-danger  #a8321f   6.31:1 / 6.68:1
+     --color-warning #8a5a09   5.58:1 / 5.91:1
    Both clear 4.5:1 on either ground, so each may carry body-size text.
-
-   Neither is a full ramp. They are two hues at one step each, with tints mixed
-   for fills — deliberately less machinery than the accent and neutral ramps
-   carry, because these appear in a handful of states rather than across the
-   interface. If status ever needs fills at several weights, generate real
-   100→900 ramps in OKLCH on the shared lightness scale (danger hue ~28,
-   warning hue ~70) and replace the color-mix tints below.
    ═════════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --color-danger: #ef8a7c;
-  --color-warning: #e0a458;
+  --color-danger: #a8321f;
+  --color-warning: #8a5a09;
 
-  --tint-danger: color-mix(in srgb, var(--color-danger) 14%, transparent);
-  --tint-warning: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  --tint-danger: color-mix(in srgb, var(--color-danger) 9%, transparent);
+  --tint-warning: color-mix(in srgb, var(--color-warning) 9%, transparent);
 
-  /* Success resolves to the accent: the mark carries the meaning, the color
+  /* Success resolves to the accent: the mark carries the meaning, the colour
      does not. Call sites use this name so a future decision to give success
      its own hue is one line here rather than a search across the codebase. */
   --color-success: var(--color-accent);
