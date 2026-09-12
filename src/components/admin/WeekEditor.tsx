@@ -4,6 +4,7 @@ import { useActionState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Field, Input } from '@/components/ui/Field';
+import { Checkbox } from '@/components/ui/Choice';
 import { Num } from '@/components/ui/Bidi';
 import type { AdminState } from '@/app/[locale]/admin/actions';
 import type { Tables } from '@/lib/supabase/database.types';
@@ -34,10 +35,9 @@ export function WeekEditor({
         <span className="card-kicker">
           {t('week')} <Num>{String(week.week_number).padStart(2, '0')}</Num>
         </span>
-        <label className="radio">
-          <input type="checkbox" name="reviewed" defaultChecked={week.reviewed} />
-          <span>{t('reviewed')}</span>
-        </label>
+        <Checkbox name="reviewed" defaultChecked={week.reviewed}>
+          {t('reviewed')}
+        </Checkbox>
       </div>
 
       <div className="grid" style={{ marginBlockStart: 'var(--space-3)' }}>

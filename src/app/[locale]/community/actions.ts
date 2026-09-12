@@ -9,6 +9,13 @@ import { routing, type Locale } from '@/i18n/routing';
 
 export type CommunityState = { error?: string };
 
+/** Textareas post CRLF; bodies are stored with plain newlines. */
+function body(formData: FormData, name: string) {
+  return String(formData.get(name) ?? '')
+    .replace(/\r\n/g, '\n')
+    .trim();
+}
+
 function readLocale(formData: FormData): Locale {
   const value = String(formData.get('locale') ?? '');
   return routing.locales.includes(value as Locale) ? (value as Locale) : routing.defaultLocale;
@@ -23,16 +30,16 @@ export async function askQuestion(
 
   const locale = readLocale(formData);
   const title = String(formData.get('title') ?? '').trim();
-  const body = String(formData.get('body') ?? '').trim();
+  const questionBody = body(formData, 'body');
   const tags = formData.getAll('tags').map(String).filter(Boolean).slice(0, 4);
 
   if (title.length < 8) return { error: 'title' };
-  if (body.length < 20) return { error: 'body' };
+  if (questionBody.length < 20) return { error: 'body' };
 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('questions')
-    .insert({ author_id: profile.id, title, body, locale })
+    .insert({ author_id: profile.id, title, body: questionBody, locale })
     .select('id')
     .single();
 
@@ -57,16 +64,16 @@ export async function postAnswer(
 
   const locale = readLocale(formData);
   const questionId = String(formData.get('questionId') ?? '');
-  const body = String(formData.get('body') ?? '').trim();
+  const answerBody = body(formData, 'body');
 
-  if (body.length < 10) return { error: 'body' };
+  if (answerBody.length < 10) return { error: 'body' };
 
   const supabase = await createClient();
   // `authored_as` is deliberately not sent: a trigger stamps it from the
   // author's real role, which is what the engineer badge reads.
   const { error } = await supabase
     .from('answers')
-    .insert({ question_id: questionId, author_id: profile.id, body });
+    .insert({ question_id: questionId, author_id: profile.id, body: answerBody });
 
   if (error) return { error: 'failed' };
 

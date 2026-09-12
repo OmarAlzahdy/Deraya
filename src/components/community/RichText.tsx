@@ -14,7 +14,9 @@ import { CodeBlock } from '@/components/ui/Bidi';
  * pasted <script> stays characters on a page.
  */
 export function RichText({ body }: { body: string }) {
-  const segments = body.split(/```/);
+  // A <textarea> submits CRLF line endings, which would leave the fence's
+  // language tag (```ts) sitting in the rendered code. Normalise before parsing.
+  const segments = body.replace(/\r\n/g, '\n').split(/```/);
 
   return (
     <div className="stack stack-3">

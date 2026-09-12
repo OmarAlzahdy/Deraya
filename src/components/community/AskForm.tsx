@@ -4,6 +4,7 @@ import { useActionState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Field, Input, Textarea } from '@/components/ui/Field';
+import { Checkbox } from '@/components/ui/Choice';
 import type { CommunityState } from '@/app/[locale]/community/actions';
 import type { Tables } from '@/lib/supabase/database.types';
 import type { Locale } from '@/i18n/routing';
@@ -34,10 +35,9 @@ export function AskForm({ action, tags }: { action: Action; tags: Tables<'tags'>
           </legend>
           <div className="row">
             {tags.map((tag) => (
-              <label key={tag.slug} className="radio">
-                <input type="checkbox" name="tags" value={tag.slug} />
-                <span>{locale === 'ar' ? tag.label_ar : tag.label_en}</span>
-              </label>
+              <Checkbox key={tag.slug} name="tags" value={tag.slug}>
+                {locale === 'ar' ? tag.label_ar : tag.label_en}
+              </Checkbox>
             ))}
           </div>
         </fieldset>

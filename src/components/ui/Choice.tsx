@@ -21,6 +21,27 @@ export function Radio({
   );
 }
 
+/** Checkbox on a native input, with a visible box — see .checkbox. */
+export function Checkbox({
+  name,
+  value,
+  defaultChecked,
+  children,
+}: {
+  name: string;
+  value?: string;
+  defaultChecked?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <label className="checkbox">
+      <input type="checkbox" name={name} value={value} defaultChecked={defaultChecked} />
+      <span className="box" />
+      <span>{children}</span>
+    </label>
+  );
+}
+
 /**
  * Segmented control, also native radios. Used for choices that must be visible
  * rather than hidden behind a select — the assessment's AR/EN and
