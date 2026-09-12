@@ -24,3 +24,9 @@ begin
     create role service_role nologin bypassrls;
   end if;
 end $$;
+
+-- Real Supabase grants these; the stub must too, or a query that calls
+-- auth.uid() directly fails for anon/authenticated even though policies work.
+grant usage on schema auth to anon, authenticated;
+grant execute on function auth.uid() to anon, authenticated;
+grant select on auth.users to authenticated;

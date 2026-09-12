@@ -48,3 +48,33 @@ psql "$DATABASE_URL" -f supabase/tests/rls.sql
 
 Against a local Supabase stack (`supabase start`), skip the stub — `auth.users`
 and `auth.uid()` are already there.
+
+## The first administrator
+
+Nobody is an administrator by default, and nobody can promote themselves — a
+trigger refuses any role change that does not come from an administrator or
+from the database itself. So the first one is made in SQL, once, from the
+Supabase SQL editor:
+
+```sql
+update public.profiles
+   set role = 'admin'
+ where handle = 'your-handle';   -- or: where id = '<auth user id>'
+```
+
+After that, `/[locale]/admin` opens for that account and everything else is
+done in the interface. Engineers are promoted the same way, or by an admin
+once a role editor exists.
+
+## What the triggers guarantee
+
+| Trigger | What it stops |
+| --- | --- |
+| `profiles_guard_role` | A member making themselves an admin by editing their own profile row |
+| `answers_stamp_authored_as` | A client asking for the "answered by an engineer" badge |
+| `answers_freeze_authored_as` | A promotion retroactively awarding that badge to old answers |
+| `answers_refresh_engineer_flag` | The list view's badge drifting from the thread's answers |
+| `on_auth_user_created` | A signed-up account with no profile row |
+
+`tests/integrity.sql` exercises all of them, and `tests/rls.sql` covers the
+row-level access model. Both pass against Postgres 16.

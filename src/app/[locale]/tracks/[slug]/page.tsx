@@ -9,16 +9,11 @@ import { Button } from '@/components/ui/Button';
 import { Kicker } from '@/components/ui/Kicker';
 import { CodeBlock, Num } from '@/components/ui/Bidi';
 import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
-import { getTrack, tracks, type Track } from '@/content/tracks';
+import type { Track } from '@/content/tracks';
+import { getTrackBySlug } from '@/lib/data/tracks';
 import { getPerson } from '@/content/people';
 import { pick } from '@/content/types';
-import { routing, type Locale } from '@/i18n/routing';
-
-export function generateStaticParams() {
-  return routing.locales.flatMap((locale) =>
-    tracks.map((track) => ({ locale, slug: track.slug })),
-  );
-}
+import type { Locale } from '@/i18n/routing';
 
 export async function generateMetadata({
   params,
@@ -26,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const track = getTrack(slug);
+  const track = await getTrackBySlug(slug);
   if (!track) return {};
   const t = await getTranslations({ locale, namespace: 'track' });
   return {
@@ -43,7 +38,7 @@ export default async function TrackPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const track = getTrack(slug);
+  const track = await getTrackBySlug(slug);
   if (!track) notFound();
 
   return <TrackDetail track={track} />;

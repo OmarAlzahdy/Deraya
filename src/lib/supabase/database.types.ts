@@ -1,11 +1,13 @@
 /**
- * Database types.
+ * Database types — introspected from the migrations in supabase/migrations/
+ * after applying them to Postgres 17 and exercising the policies.
  *
- * Introspected from the schema in supabase/migrations/, which was applied and
- * exercised against Postgres 16 before this file was written. Once a Supabase
- * project exists, regenerate rather than edit:
+ * Regenerate rather than edit. With a project linked:
  *
  *     npx supabase gen types typescript --linked > src/lib/supabase/database.types.ts
+ *
+ * Without one (what produced this file), apply the migrations to any Postgres
+ * and introspect it — the shape is the same.
  */
 
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
@@ -44,6 +46,22 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "answers_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "answers_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       assessment_results: {
         Row: {
@@ -79,6 +97,29 @@ export type Database = {
           graded_by?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "assessment_results_assessment_id_fkey";
+            columns: ["assessment_id"];
+            isOneToOne: true;
+            referencedRelation: "assessments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_results_graded_by_fkey";
+            columns: ["graded_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "assessment_results_recommended_track_id_fkey";
+            columns: ["recommended_track_id"];
+            isOneToOne: false;
+            referencedRelation: "tracks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       assessments: {
         Row: {
@@ -108,6 +149,15 @@ export type Database = {
           started_at?: string;
           completed_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "assessments_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       enrollments: {
         Row: {
@@ -134,6 +184,22 @@ export type Database = {
           started_at?: string;
           completed_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "enrollments_track_id_fkey";
+            columns: ["track_id"];
+            isOneToOne: false;
+            referencedRelation: "tracks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       profiles: {
         Row: {
@@ -184,6 +250,15 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey";
+            columns: ["id"];
+            isOneToOne: true;
+            referencedRelation: "auth.users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       question_tags: {
         Row: {
@@ -198,6 +273,22 @@ export type Database = {
           question_id?: string;
           tag_slug?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "question_tags_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "question_tags_tag_slug_fkey";
+            columns: ["tag_slug"];
+            isOneToOne: false;
+            referencedRelation: "tags";
+            referencedColumns: ["slug"];
+          },
+        ];
       };
       questions: {
         Row: {
@@ -230,6 +321,15 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "questions_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       review_comments: {
         Row: {
@@ -271,6 +371,29 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "review_comments_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "review_comments_parent_id_fkey";
+            columns: ["parent_id"];
+            isOneToOne: false;
+            referencedRelation: "review_comments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "review_comments_review_id_fkey";
+            columns: ["review_id"];
+            isOneToOne: false;
+            referencedRelation: "reviews";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       reviews: {
         Row: {
@@ -297,6 +420,22 @@ export type Database = {
           published_at?: string | null;
           created_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey";
+            columns: ["reviewer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "reviews_submission_id_fkey";
+            columns: ["submission_id"];
+            isOneToOne: false;
+            referencedRelation: "submissions";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       services: {
         Row: {
@@ -353,6 +492,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       submissions: {
         Row: {
@@ -397,6 +537,29 @@ export type Database = {
           submitted_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "submissions_enrollment_id_fkey";
+            columns: ["enrollment_id"];
+            isOneToOne: false;
+            referencedRelation: "enrollments";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "submissions_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "submissions_reviewer_id_fkey";
+            columns: ["reviewer_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       tags: {
         Row: {
@@ -417,6 +580,15 @@ export type Database = {
           label_en?: string;
           track_id?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "tags_track_id_fkey";
+            columns: ["track_id"];
+            isOneToOne: false;
+            referencedRelation: "tracks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       track_instructors: {
         Row: {
@@ -434,6 +606,22 @@ export type Database = {
           profile_id?: string;
           position?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: "track_instructors_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "track_instructors_track_id_fkey";
+            columns: ["track_id"];
+            isOneToOne: false;
+            referencedRelation: "tracks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       track_weeks: {
         Row: {
@@ -472,6 +660,15 @@ export type Database = {
           project_en?: string | null;
           reviewed?: boolean;
         };
+        Relationships: [
+          {
+            foreignKeyName: "track_weeks_track_id_fkey";
+            columns: ["track_id"];
+            isOneToOne: false;
+            referencedRelation: "tracks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       tracks: {
         Row: {
@@ -531,6 +728,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       week_progress: {
         Row: {
@@ -548,12 +746,21 @@ export type Database = {
           week_number?: number;
           completed_at?: string | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: "week_progress_enrollment_id_fkey";
+            columns: ["enrollment_id"];
+            isOneToOne: false;
+            referencedRelation: "enrollments";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
-    Views: Record<string, never>;
+    Views: { [key: string]: never };
     Functions: {
-      is_admin: { Args: Record<string, never>; Returns: boolean };
-      is_staff: { Args: Record<string, never>; Returns: boolean };
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+      is_staff: { Args: Record<PropertyKey, never>; Returns: boolean };
     };
     Enums: {
       app_locale: "ar" | "en";
@@ -564,11 +771,15 @@ export type Database = {
       member_role: "member" | "engineer" | "instructor" | "admin";
       submission_status: "submitted" | "in_review" | "commented" | "resolved";
     };
+    CompositeTypes: { [key: string]: never };
   };
 };
 
-/** Row shorthand: Tables<"tracks"> is the tracks row type. */
 export type Tables<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Row"];
+export type TablesInsert<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Insert"];
+export type TablesUpdate<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Update"];
 export type Enums<T extends keyof Database["public"]["Enums"]> =
   Database["public"]["Enums"][T];

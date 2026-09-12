@@ -5,13 +5,10 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { Button } from '@/components/ui/Button';
 import { Kicker } from '@/components/ui/Kicker';
 import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
-import { services } from '@/content/services';
+import type { Service } from '@/content/services';
+import { getPublishedServices } from '@/lib/data/services';
 import { pick } from '@/content/types';
-import { routing, type Locale } from '@/i18n/routing';
-
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+import type { Locale } from '@/i18n/routing';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -22,7 +19,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function ServicesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <Services />;
+
+  const services = await getPublishedServices();
+  return <Services services={services} />;
 }
 
 /**
@@ -35,7 +34,7 @@ export default async function ServicesPage({ params }: { params: Promise<{ local
  *
  * No wireframe exists for this screen; the layout is a proposal.
  */
-function Services() {
+function Services({ services }: { services: Service[] }) {
   const t = useTranslations();
   const locale = useLocale() as Locale;
 
@@ -55,6 +54,10 @@ function Services() {
 
         <section className="section">
           <div className="stack stack-8">
+            {services.length === 0 ? (
+              <p className="panel-sunken measure t-small text-muted">{t('services.empty')}</p>
+            ) : null}
+
             {services.map((service) => (
               <article key={service.slug} className="card elev-sm">
                 <h2 className="card-title">{pick(service.title, locale)}</h2>

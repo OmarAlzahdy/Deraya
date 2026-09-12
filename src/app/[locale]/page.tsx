@@ -9,15 +9,12 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Kicker } from '@/components/ui/Kicker';
 import { PlaceholderNote } from '@/components/ui/PlaceholderNote';
-import { tracks } from '@/content/tracks';
+import { getPublishedTracks } from '@/lib/data/tracks';
 import { people } from '@/content/people';
 import { proof } from '@/content/proof';
 import { pick } from '@/content/types';
-import { routing, type Locale } from '@/i18n/routing';
-
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+import type { Track } from '@/content/tracks';
+import type { Locale } from '@/i18n/routing';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -28,7 +25,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <Home />;
+
+  // Tracks come from the database once a project is connected; before that the
+  // data layer falls back to the placeholder module, markers intact.
+  const tracks = await getPublishedTracks();
+  return <Home tracks={tracks} />;
 }
 
 /**
@@ -46,7 +47,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
  * this screen. Content marked pending comes from src/content/, where every
  * placeholder names the decision that fills it.
  */
-function Home() {
+function Home({ tracks }: { tracks: Track[] }) {
   const t = useTranslations();
   const locale = useLocale() as Locale;
 
@@ -123,6 +124,10 @@ function Home() {
             <h2>{t('home.tracksTitle')}</h2>
             <p className="measure text-secondary t-small">{t('home.tracksBody')}</p>
           </div>
+
+          {tracks.length === 0 ? (
+            <p className="panel-sunken measure t-small text-muted">{t('home.noTracks')}</p>
+          ) : null}
 
           <div className="grid">
             {tracks.map((track) => (
