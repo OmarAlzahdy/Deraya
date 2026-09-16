@@ -38,7 +38,9 @@ await page.goto(`${BASE}/en/account`, { waitUntil: 'networkidle' });
 check('signed in, account page reachable', new URL(page.url()).pathname, '/en/account');
 check(
   'header shows the member as signed in',
-  await page.locator('nav a[href="/en/account"]').count(),
+  // The account link sits in the header's third zone, beside the language
+  // switch — not in the navigation, which is the same for everyone.
+  await page.locator('.site-header-actions a[href="/en/account"]').count(),
   1,
 );
 

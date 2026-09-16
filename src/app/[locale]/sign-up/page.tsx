@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { AuthForm } from '@/components/auth/AuthForm';
 import { Kicker } from '@/components/ui/Kicker';
 import { Link } from '@/i18n/navigation';
+import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { signUp } from '../auth-actions';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -22,6 +23,9 @@ export default async function SignUpPage({ params }: { params: Promise<{ locale:
     requestHeaders.get('origin') ??
     (requestHeaders.get('host') ? `https://${requestHeaders.get('host')}` : '');
 
+  /** Same as sign-in: an inert form is better than one that fails on submit. */
+  const ready = isSupabaseConfigured();
+
   return (
     <>
       <SiteHeader />
@@ -33,7 +37,24 @@ export default async function SignUpPage({ params }: { params: Promise<{ locale:
             <p className="t-small text-secondary">{t('signUpBody')}</p>
           </header>
 
-          <AuthForm mode="signUp" action={signUp} locale={locale} origin={origin} />
+          {ready ? null : (
+            <div className="notice notice-accent" role="status">
+              <div className="flow-1">
+                <strong className="t-small" style={{ color: 'var(--color-text)' }}>
+                  {t('unavailable.title')}
+                </strong>
+                <p>{t('unavailable.body')}</p>
+              </div>
+            </div>
+          )}
+
+          <AuthForm
+            mode="signUp"
+            action={signUp}
+            locale={locale}
+            origin={origin}
+            unavailable={!ready}
+          />
 
           <p className="auth-foot">
             {t('haveAccount')} <Link href="/sign-in">{t('signIn')}</Link>

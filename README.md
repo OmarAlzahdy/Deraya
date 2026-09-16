@@ -243,13 +243,27 @@ positions a mark through the tables that know the letter as it is written.
 | 4 | Prices | **Open.** Track price, review price, consulting day rate. Price slots are built and visibly empty — a wrong number on a buyer's page is a commercial claim |
 | 5 | Team | **Open.** Names, roles and photographs for 4–10 people. Nothing is invented here on purpose: a fabricated engineer on a page whose claim is "taught by practitioners" is the one lie the brand cannot afford |
 | 6 | Screen wireframes | **Resolved by proposal.** 01–03 are built as layout proposals to review running rather than as wireframes. 04–08 are not started |
-| 7 | Backend | **Resolved — Supabase.** Schema, RLS, triggers and client are in the repository and tested end to end. **No project is provisioned**: the organisation is at the free tier's two-project cap, so `deraya` could not be created. Freeing a slot is the last step before this runs live |
+| 7 | Backend | **Resolved — Supabase.** Schema, RLS, triggers and client are in the repository and tested end to end. **No project is provisioned**: the organisation is at the free tier's two-project cap, so `deraya` could not be created. Freeing a slot, then setting the two `NEXT_PUBLIC_SUPABASE_*` variables on Vercel and redeploying, is all that stands between the deployed site and working accounts |
 
 ### What it takes to go further
 
-- **Provision Supabase.** The organisation currently holds four projects and
-  the free tier allows two per member, so creating `deraya` is refused. Delete,
-  pause or upgrade one, then `supabase link` and `supabase db push`.
+- **Provision Supabase, and sign-in starts working.** This is the only thing
+  standing between the deployed site and working accounts. The organisation
+  holds four projects and the free tier allows two active ones per member, so
+  creating `deraya` is refused outright — the API answers *"the following
+  organization members have reached their maximum limits"*. Three steps, in
+  order:
+
+  1. Free a slot: pause, delete or upgrade one of the existing projects, then
+     create `deraya`.
+  2. `supabase link --project-ref <ref>` and `supabase db push`.
+  3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+     on the Vercel project — **and redeploy**. `NEXT_PUBLIC_*` values are
+     inlined into the bundle at build time, so a variable added after a build
+     does nothing until the next one.
+
+  Until then the sign-in and sign-up pages say so and their forms are inert,
+  rather than taking a password and failing on submit.
 - **Screens 04, 05, 07 and 08** (assessment, public profile, dashboard, review
   thread) are not built. The schema carries all four.
 - **Booking and enrollment flows** do not exist. Their CTAs are visible and
