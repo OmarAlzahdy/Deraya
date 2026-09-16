@@ -19,12 +19,15 @@ export function AuthForm({
   locale,
   next,
   origin,
+  unavailable = false,
 }: {
   mode: 'signIn' | 'signUp';
   action: Action;
   locale: string;
   next?: string;
   origin: string;
+  /** No database behind this deployment: the form is shown, but inert. */
+  unavailable?: boolean;
 }) {
   const t = useTranslations('auth');
   const [state, formAction, pending] = useActionState(action, {});
@@ -37,7 +40,9 @@ export function AuthForm({
 
       {mode === 'signUp' ? (
         <Field label={t('displayName')}>
-          {({ id }) => <Input id={id} name="displayName" autoComplete="name" required />}
+          {({ id }) => (
+            <Input id={id} name="displayName" autoComplete="name" required disabled={unavailable} />
+          )}
         </Field>
       ) : null}
 
@@ -51,6 +56,7 @@ export function AuthForm({
             autoComplete="email"
             ltr
             required
+            disabled={unavailable}
           />
         )}
       </Field>
@@ -64,6 +70,7 @@ export function AuthForm({
             ltr
             autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'}
             required
+            disabled={unavailable}
           />
         )}
       </Field>
@@ -80,7 +87,7 @@ export function AuthForm({
         </p>
       ) : null}
 
-      <Button type="submit" variant="primary" disabled={pending}>
+      <Button type="submit" variant="primary" disabled={pending || unavailable}>
         {pending ? t('working') : t(mode)}
       </Button>
     </form>

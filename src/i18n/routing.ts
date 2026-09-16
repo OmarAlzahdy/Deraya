@@ -25,6 +25,20 @@ export const routing = defineRouting({
 
 export type Locale = (typeof routing.locales)[number];
 
+/**
+ * Narrow an unknown segment value to a locale.
+ *
+ * Pages get their locale from a matched `[locale]` segment and can trust it.
+ * The Open Graph image routes cannot: Next resolves their metadata once per
+ * locale *and* once with no params bound at all, so `locale` arrives as
+ * `undefined` there. Falling back is the whole point — an image route must
+ * still produce an image.
+ */
+export function resolveLocale(value: string | undefined): Locale {
+  const known: readonly string[] = routing.locales;
+  return value !== undefined && known.includes(value) ? (value as Locale) : routing.defaultLocale;
+}
+
 /** Direction is a property of the locale, and the only thing that flips layout. */
 export const direction = { ar: 'rtl', en: 'ltr' } as const;
 

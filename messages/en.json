@@ -216,6 +216,10 @@
     "working": "Working",
     "noAccount": "No account yet?",
     "haveAccount": "Already have an account?",
+    "unavailable": {
+      "title": "Accounts are not connected yet",
+      "body": "This deployment has no database behind it yet, so signing in cannot work. Everything else on the site does, and this form starts working the moment one is connected."
+    },
     "error": {
       "missing": "Fill in every field.",
       "credentials": "That email and password do not match an account.",
@@ -278,7 +282,7 @@
     "signIn": "Sign in",
     "deletedAuthor": "Removed account",
     "empty": "No questions yet. The first one sets the tone.",
-    "needsDatabase": "The community needs the database connected. Nothing is lost — set the Supabase environment variables and this fills in.",
+    "needsDatabase": "The community opens once the database is connected. Nothing is lost — the threads fill in here.",
     "error": {
       "title": "Give the question a title of at least 8 characters.",
       "body": "Add some detail — at least 20 characters.",
