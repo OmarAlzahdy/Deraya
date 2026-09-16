@@ -58,16 +58,17 @@ update public.profiles set role = 'admin' where handle = 'your-handle';
 
 | Path | What it is |
 | --- | --- |
-| `src/styles/tokens.css` | The Signal palette, type scale, spacing, radii, elevation. The source of truth — never hard-code a value this file carries |
+| `src/styles/tokens.css` | The Paper palette, type scale, spacing, radii, elevation. The source of truth — never hard-code a value this file carries |
 | `src/styles/tokens.status.css` | Error and warning colors. Success has no hue by design — see open decision 2 |
 | `src/styles/rtl.css` | Mirroring, direction islands, bilingual kickers, language runs |
-| `src/styles/components.css` | The Nocturne class layer, re-tinted to Signal and rewritten in logical properties |
+| `src/styles/components.css` | The Nocturne class layer, re-tinted to Paper and rewritten in logical properties |
 | `src/components/ui/` | The component layer over those classes |
 | `src/i18n/` | Locale routing, request config, number and date formatting |
 | `src/proxy.ts` | Locale negotiation and Supabase session refresh, in that order |
 | `src/lib/auth.ts` | Who is asking: `getProfile`, `requireProfile`, `requireAdmin` |
 | `src/lib/supabase/` | Typed client for browser and server, session refresh, introspected database types |
 | `src/lib/data/` | Queries behind the pages, with a pre-provisioning fallback |
+| `src/lib/og/` | The share card: its layout, its fonts, and the Arabic shaping the image renderer does not do |
 | `supabase/` | Schema, RLS policies, triggers, and the tests that exercise them |
 | `test/local-stack/` | Running and verifying the platform without Docker |
 | `messages/{ar,en}.json` | Copy. Approved brand copy is used verbatim |
@@ -156,6 +157,38 @@ than documented:
   works without JavaScript. The choice persists in the `NEXT_LOCALE` cookie for
   a year and beats `Accept-Language` on later visits.
 
+## Sharing a link
+
+A link pasted into WhatsApp is not opened, it is *scraped*: no stylesheet, no
+web font, no JavaScript. So the preview is its own image, built inline, and the
+tags that point at it have to be absolute — a scraper has no page to resolve a
+relative URL against. `metadataBase` in the locale layout is what makes them
+absolute; it reads `NEXT_PUBLIC_SITE_URL` first, then the Vercel host, then
+localhost.
+
+Three routes name a card, and the most specific one wins:
+
+| Route | What the card carries |
+| --- | --- |
+| `[locale]/opengraph-image` | The site: the headline, the subhead, the three facts under a rule |
+| `[locale]/tracks/[slug]/opengraph-image` | The track: its name, what it ends with, its length and its price |
+| `[locale]/community/[id]/opengraph-image` | The thread: the question, its opening lines, how many answers |
+
+The card is the dark band on `--color-section`, not the site's warm white: a
+preview sits in a chat thread among other cards, and the teal is what reads as
+Deraya at thumbnail size. It is also the one place that repeats token values as
+literals — a scraper never fetches `tokens.css` — and each literal names the
+token it mirrors.
+
+Arabic on the card is shaped in `src/lib/og/arabic.ts` rather than by the
+renderer. Satori joins Arabic letters correctly but measures them isolated, so
+every word reserves more width than it draws and the line comes out ragged; and
+it lays words out left to right whatever `direction` says, so a sentence reads
+backwards. Both are fixed here: words are flex items in a `row-reverse` row,
+and each word is rewritten into the Arabic Presentation Forms, where measuring
+and drawing agree. Words carrying harakat are left unshaped, because the font
+positions a mark through the tables that know the letter as it is written.
+
 ## Verified
 
 - `/` negotiates to `/ar` or `/en`; both locales always carry a URL prefix, so
@@ -175,6 +208,10 @@ than documented:
   editing a week, the course reaching both public pages, asking a question in
   Arabic with code that stays LTR, the engineer badge's integrity rules, and a
   signed-out visitor's view. `test/local-stack/e2e.mjs`.
+- Both share cards render through a real build and were read as images: the
+  Arabic one sets right to left with even word spacing and a correctly placed
+  shadda, the English one sets in Inter, and the track and thread cards carry
+  their own content rather than the site's.
 - The schema applies to Postgres 16 and its policies were exercised — anonymous
   visitors see published tracks and public profiles but no submissions and no
   unshared results; a member sees their own work and not another's; an assigned
