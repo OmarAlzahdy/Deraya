@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Inter, IBM_Plex_Sans_Arabic, IBM_Plex_Mono } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { routing, getDirection, otherLocale, type Locale } from '@/i18n/routing';
 import { siteUrl } from '@/lib/site';
 import '@/styles/globals.css';
@@ -113,6 +114,7 @@ export default async function LocaleLayout({
     >
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
